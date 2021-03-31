@@ -20,6 +20,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.*;
 
 public class WebDispatchServlet extends HttpServlet {
@@ -153,7 +154,14 @@ public class WebDispatchServlet extends HttpServlet {
     }
 
     private boolean scanClass(String packagePath) {
-        URL url = this.getClass().getClassLoader().getResource("/" + packagePath.replaceAll("\\.", "/"));
+        String path = this.getClass().getClassLoader().getResource("/" + packagePath.replaceAll("\\.", "/")).getPath();
+        URL url = null;
+        try {// 有些系统需要指定字符集，否则会失效
+            path = "file:"+URLDecoder.decode(path,"utf-8");
+            url = new URL(path);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         for (File file : new File(url.getFile()).listFiles()){
             if (file.isDirectory()){
                 scanClass(packagePath + "." + file.getName());
@@ -216,8 +224,8 @@ public class WebDispatchServlet extends HttpServlet {
                 e.printStackTrace();
             }
         }else {
+            System.out.println(url);
             resp.getWriter().write("<h1>404</h1>");// 无法匹配url路径，返回404页面
-            return;
         }
     }
 }
