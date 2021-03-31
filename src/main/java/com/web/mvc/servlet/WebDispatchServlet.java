@@ -1,12 +1,15 @@
 package com.web.mvc.servlet;
 
 import com.web.mvc.annotation.WebAutowired;
-import com.web.mvc.annotation.WebController;
+import com.web.mvc.annotation.component.WebComponent;
+import com.web.mvc.annotation.component.WebController;
 import com.web.mvc.annotation.WebRequestMapping;
-import com.web.mvc.annotation.WebService;
+import com.web.mvc.annotation.component.WebRestController;
+import com.web.mvc.annotation.component.WebService;
 import com.web.mvc.content.BeanContent;
 
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,6 +32,8 @@ public class WebDispatchServlet extends HttpServlet {
     private BeanContent beanContent = BeanContent.getInstance();
     // handleMapping url映射
     private Map<String, Method> handleMapping = new HashMap<>();
+    // viewMapping 视图映射
+    private Map<String, String> viewMapping = new HashMap<>();
 
     @Override
     public void init(ServletConfig config) {
@@ -43,13 +48,44 @@ public class WebDispatchServlet extends HttpServlet {
         if (!dependencyInjection()) throw new RuntimeException("==>bean装配失败!");
 
         if (!initHandleMapping()) throw new RuntimeException("==>url初始化失败!");
+
+        if (!initViewMapping()) throw new RuntimeException("==>视图初始化失败!");
+    }
+
+    private boolean initViewMapping() {
+        for (Map.Entry entry : beanContent.getEntrySet()){
+            Class clazz = entry.getValue().getClass();
+            // 如果不是WebController则终止
+            if (!clazz.isAnnotationPresent(WebController.class)) continue;
+            StringBuilder baseUrl = new StringBuilder();
+            if (clazz.isAnnotationPresent(WebRequestMapping.class)){
+                WebRequestMapping webRequestMapping = (WebRequestMapping) clazz.getAnnotation(WebRequestMapping.class);
+                baseUrl.append(webRequestMapping.value());
+            }
+            Method [] methods = clazz.getDeclaredMethods();
+            for (Method method : methods){
+                // 如果方法不带WebRequestMapping注解则终止
+                if (!method.isAnnotationPresent(WebRequestMapping.class)) continue;
+                WebRequestMapping webRequestMapping = method.getAnnotation(WebRequestMapping.class);
+                StringBuilder stringBuilder = new StringBuilder(baseUrl);
+                stringBuilder.append(webRequestMapping.value());
+                String beanName = method.getDeclaringClass().getSimpleName();
+                try {
+                    viewMapping.put(stringBuilder.toString(), (String)method.invoke(beanContent.getBean(beanName)));
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        System.out.println("==>视图映射装配完成!");
+        return true;
     }
 
     private boolean initHandleMapping() {
         for (Map.Entry entry : beanContent.getEntrySet()){
             Class clazz = entry.getValue().getClass();
-            // 如果不是WebController则终止
-            if (!clazz.isAnnotationPresent(WebController.class)) continue;
+            // 如果不是WebRestController则终止
+            if (!clazz.isAnnotationPresent(WebRestController.class)) continue;
             StringBuilder baseUrl = new StringBuilder();
             if (clazz.isAnnotationPresent(WebRequestMapping.class)){
                 WebRequestMapping webRequestMapping = (WebRequestMapping) clazz.getAnnotation(WebRequestMapping.class);
@@ -98,6 +134,12 @@ public class WebDispatchServlet extends HttpServlet {
                     instance = clazz.newInstance();
                     beanContent.setBean(clazz.getSimpleName(),instance);
                 }else if(clazz.isAnnotationPresent(WebService.class)) {
+                    instance = clazz.newInstance();
+                    beanContent.setBean(clazz.getSimpleName(),instance);
+                }else if (clazz.isAnnotationPresent(WebComponent.class)){
+                    instance = clazz.newInstance();
+                    beanContent.setBean(clazz.getSimpleName(),instance);
+                }else if (clazz.isAnnotationPresent(WebRestController.class)){
                     instance = clazz.newInstance();
                     beanContent.setBean(clazz.getSimpleName(),instance);
                 }
@@ -156,19 +198,26 @@ public class WebDispatchServlet extends HttpServlet {
     }
 
     private void doDispatch(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        if (handleMapping.isEmpty()) return;
         String contextPath = req.getContextPath();
         String url = req.getRequestURI().replace(contextPath, "");
-        if (!handleMapping.containsKey(url)){
+        if (viewMapping.containsKey(url)){
+            String view = viewMapping.get(url);
+            try {
+                req.getRequestDispatcher("/WEB-INF/templates/index.html").forward(req,resp);
+            }catch (ServletException e){
+                e.printStackTrace();
+            }
+        }else if (handleMapping.containsKey(url)){
+            Method method = handleMapping.get(url);
+            String beanName = method.getDeclaringClass().getSimpleName();
+            try {
+                resp.getWriter().write((String) method.invoke(beanContent.getBean(beanName)));// 执行controller对应的方法
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }else {
             resp.getWriter().write("<h1>404</h1>");// 无法匹配url路径，返回404页面
             return;
-        }
-        Method method = handleMapping.get(url);
-        String beanName = method.getDeclaringClass().getSimpleName();
-        try {
-            resp.getWriter().write((String) method.invoke(beanContent.getBean(beanName)));
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
         }
     }
 }

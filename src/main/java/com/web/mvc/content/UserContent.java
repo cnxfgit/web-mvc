@@ -49,4 +49,20 @@ public class UserContent {
         return false;
     }
 
+    public boolean addUser(User user){
+        if (!userMap.containsKey(user.getId())){
+            userMap.put(user.getId(),user);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean putUser(User user){
+        if (userMap.containsKey(user.getId())){
+            userMap.put(user.getId(),user);
+            return true;
+        }
+        return false;
+    }
+
 }

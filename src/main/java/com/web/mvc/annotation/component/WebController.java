@@ -1,10 +1,10 @@
-package com.web.mvc.annotation;
+package com.web.mvc.annotation.component;
 
 import java.lang.annotation.*;
 
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Target(ElementType.TYPE)
-public @interface WebService {
+public @interface WebController {
     String value() default "";
 }

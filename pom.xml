@@ -20,7 +20,7 @@
     </dependencies>
 
     <build>
-        <finalName>${project.artifactId}</finalName>
+        <finalName>${project.artifactId}</finalName><!-- 打war包不需要版本号 -->
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
