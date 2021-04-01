@@ -1,14 +1,14 @@
 package com.web.mvc.controller;
 
 import com.web.mvc.annotation.WebAutowired;
-import com.web.mvc.annotation.component.WebController;
 import com.web.mvc.annotation.WebRequestMapping;
+import com.web.mvc.annotation.component.WebRestController;
 import com.web.mvc.entity.User;
 import com.web.mvc.service.UserService;
 
 import java.util.List;
 
-@WebController
+@WebRestController
 @WebRequestMapping("/user")
 public class UserController {
 

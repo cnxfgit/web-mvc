@@ -1,9 +1,9 @@
 package com.web.mvc.servlet;
 
 import com.web.mvc.annotation.WebAutowired;
+import com.web.mvc.annotation.WebRequestMapping;
 import com.web.mvc.annotation.component.WebComponent;
 import com.web.mvc.annotation.component.WebController;
-import com.web.mvc.annotation.WebRequestMapping;
 import com.web.mvc.annotation.component.WebRestController;
 import com.web.mvc.annotation.component.WebService;
 import com.web.mvc.content.BeanContent;
@@ -35,12 +35,17 @@ public class WebDispatchServlet extends HttpServlet {
     private Map<String, Method> handleMapping = new HashMap<>();
     // viewMapping 视图映射
     private Map<String, String> viewMapping = new HashMap<>();
+    // 视图的前缀后缀
+    private String[] viewPrefixSuffix = new String[2];
 
     @Override
     public void init(ServletConfig config) {
         if (!initProperties(config)) throw new RuntimeException("==>配置文件初始化失败!");
 
-        String packagePath = properties.getProperty("scanPackage");
+        String packagePath = properties.getProperty("scanPackage");//获取包路径
+        viewPrefixSuffix[0] = properties.getProperty("viewPrefix");// 视图前缀
+        viewPrefixSuffix[1] = properties.getProperty("viewSuffix");// 视图后缀
+
         if (!scanClass(packagePath)) throw new RuntimeException("==>扫描包失败!");
         System.out.println("==>扫描包成功!");
 
@@ -72,7 +77,8 @@ public class WebDispatchServlet extends HttpServlet {
                 stringBuilder.append(webRequestMapping.value());
                 String beanName = method.getDeclaringClass().getSimpleName();
                 try {
-                    viewMapping.put(stringBuilder.toString(), (String)method.invoke(beanContent.getBean(beanName)));
+                    String viewUrl = viewPrefixSuffix[0] + (String)method.invoke(beanContent.getBean(beanName)) + viewPrefixSuffix[1];
+                    viewMapping.put(stringBuilder.toString(), viewUrl);
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
                 }
@@ -156,7 +162,7 @@ public class WebDispatchServlet extends HttpServlet {
     private boolean scanClass(String packagePath) {
         String path = this.getClass().getClassLoader().getResource("/" + packagePath.replaceAll("\\.", "/")).getPath();
         URL url = null;
-        try {// 有些系统需要指定字符集，否则会失效
+        try {// 有些系统需要指定字符集，否则会乱码失效
             path = "file:"+URLDecoder.decode(path,"utf-8");
             url = new URL(path);
         }catch (Exception e){
@@ -211,7 +217,7 @@ public class WebDispatchServlet extends HttpServlet {
         if (viewMapping.containsKey(url)){
             String view = viewMapping.get(url);
             try {
-                req.getRequestDispatcher("/WEB-INF/templates/index.html").forward(req,resp);
+                req.getRequestDispatcher(view).forward(req,resp);// 转发致default Servlet
             }catch (ServletException e){
                 e.printStackTrace();
             }
@@ -224,7 +230,7 @@ public class WebDispatchServlet extends HttpServlet {
                 e.printStackTrace();
             }
         }else {
-            System.out.println(url);
+            resp.setStatus(404);
             resp.getWriter().write("<h1>404</h1>");// 无法匹配url路径，返回404页面
         }
     }
