@@ -5,6 +5,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Target(ElementType.PARAMETER)
-public @interface WebRequestParam {
-    String value();
+public @interface WebRequestBody {
+    String value() default "";
 }

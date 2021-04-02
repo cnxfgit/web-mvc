@@ -6,6 +6,8 @@ import com.web.mvc.annotation.component.WebComponent;
 import com.web.mvc.annotation.component.WebController;
 import com.web.mvc.annotation.component.WebRestController;
 import com.web.mvc.annotation.component.WebService;
+import com.web.mvc.annotation.param.WebRequestBody;
+import com.web.mvc.annotation.param.WebRequestParam;
 import com.web.mvc.content.BeanContent;
 
 import javax.servlet.ServletConfig;
@@ -19,6 +21,7 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.*;
@@ -202,7 +205,6 @@ public class WebDispatchServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        resp.setContentType("text/html;charset=UTF-8");// 设置编码
         doPost(req,resp);
     }
 
@@ -223,11 +225,43 @@ public class WebDispatchServlet extends HttpServlet {
             }
         }else if (handleMapping.containsKey(url)){
             Method method = handleMapping.get(url);
+            Parameter[] parameters = method.getParameters();
+            List list = new ArrayList();
+            for (Parameter parameter:parameters) {
+                if (parameter.isAnnotationPresent(WebRequestBody.class)){
+                    Class clazz = parameter.getType();
+                    try {
+                        Object object = clazz.newInstance();
+                        Field[] fields = object.getClass().getDeclaredFields();
+                        for (Field field:fields) {
+                            field.setAccessible(true);
+                            Class<?> fieldType = field.getType();
+                            String fieldName = field.getName();
+                            if (fieldType == String.class){
+                                field.set(object,req.getParameter(fieldName));
+                            }
+                            if (fieldType == Integer.class || fieldType == int.class){
+                                field.set(object,Integer.parseInt(req.getParameter(fieldName)));
+                            }
+                        }
+                        list.add(object);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+                if (parameter.isAnnotationPresent(WebRequestParam.class)){
+                    WebRequestParam webRequestParam = parameter.getAnnotation(WebRequestParam.class);
+                    String param = req.getParameter(webRequestParam.value());
+                    list.add(param);
+                }
+            }
             String beanName = method.getDeclaringClass().getSimpleName();
             try {
-                resp.getWriter().write((String) method.invoke(beanContent.getBean(beanName)));// 执行controller对应的方法
-            } catch (IllegalAccessException | InvocationTargetException e) {
+                Object result = method.invoke(beanContent.getBean(beanName),list.toArray());// 执行controller对应的方法
+                resp.getWriter().write(result.toString());
+            } catch (Exception e) {
                 e.printStackTrace();
+                resp.getWriter().write(e.getMessage());
             }
         }else {
             resp.setStatus(404);

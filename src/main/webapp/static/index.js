@@ -1,1 +1,1 @@
-alert("index")
+alert("中文")

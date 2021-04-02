@@ -14,4 +14,8 @@ public class UserService {
     public List<User> getUser(){
         return userContent.getAllUser();
     }
+
+    public User getUserByName(String name){
+        return userContent.getUser(name);
+    }
 }
