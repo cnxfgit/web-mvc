@@ -4,7 +4,7 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-public class EncodingFilter implements Filter {
+public class StaticFilter implements Filter {
 
     private String encoding = null;
 
@@ -15,14 +15,14 @@ public class EncodingFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        response.setContentType("text/html;charset="+encoding);// 设置编码
         HttpServletRequest req = (HttpServletRequest)request;
-        String xRequestedWith = req.getHeader("X-Requested-With");
-        if (xRequestedWith != null && xRequestedWith.indexOf("XMLHttpRequest") != -1) {
-            response.setContentType("application/json");
+        String suffix = req.getRequestURL().substring(req.getRequestURL().lastIndexOf("."));
+        System.out.println(suffix);
+        if (".css".equals(suffix)){
+            response.setContentType("text/css;charset="+encoding);
+        }else if (".js".equals(suffix)){
+            response.setContentType("text/javascript;charset="+encoding);
         }
-        request.setCharacterEncoding(encoding);
-        response.setCharacterEncoding(encoding);
         chain.doFilter(request,response);
     }
 

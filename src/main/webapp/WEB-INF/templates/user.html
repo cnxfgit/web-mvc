@@ -1,17 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
     <title>Title</title>
+    <script type="text/javascript" src="/static/js/common-header.js"></script>
 </head>
 <body>
-<h1>user</h1>
-<form method="post" action="/user/add">
-    <input type="text" name="name" value="姓名">
-    <input type="text" name="age" value="年龄">
-    <input type="text" name="id" value="id">
-    <input type="submit" value="提交">
-</form>
-<script type="text/javascript" src="/static/index.js"></script>
+    <table class="layui-hide" id="user_table" lay-filter="userTable"></table>
 </body>
+<script type="text/javascript"  src="/static/js/common-script.js"></script>
+<script type="text/javascript"  src="/static/js/user.js"></script>
 </html>

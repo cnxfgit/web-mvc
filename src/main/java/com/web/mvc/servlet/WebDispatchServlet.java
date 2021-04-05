@@ -249,10 +249,17 @@ public class WebDispatchServlet extends HttpServlet {
                         e.printStackTrace();
                     }
                 }
-                if (parameter.isAnnotationPresent(WebRequestParam.class)){
+                else if (parameter.isAnnotationPresent(WebRequestParam.class)){
                     WebRequestParam webRequestParam = parameter.getAnnotation(WebRequestParam.class);
-                    String param = req.getParameter(webRequestParam.value());
-                    list.add(param);
+                    if (parameter.getType() == String.class){
+                        String param = req.getParameter(webRequestParam.value());
+                        list.add(param);
+                    }
+
+                    if (parameter.getType() == Integer.class || parameter.getType() == int.class){
+                        Integer param = Integer.parseInt(req.getParameter(webRequestParam.value()));
+                    }
+
                 }
             }
             String beanName = method.getDeclaringClass().getSimpleName();
