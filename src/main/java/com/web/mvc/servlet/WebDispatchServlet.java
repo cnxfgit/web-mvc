@@ -71,7 +71,7 @@ public class WebDispatchServlet extends HttpServlet {
                 WebRequestMapping webRequestMapping = (WebRequestMapping) clazz.getAnnotation(WebRequestMapping.class);
                 baseUrl.append(webRequestMapping.value());
             }
-            Method [] methods = clazz.getDeclaredMethods();
+            Method[] methods = clazz.getDeclaredMethods();
             for (Method method : methods){
                 // 如果方法不带WebRequestMapping注解则终止
                 if (!method.isAnnotationPresent(WebRequestMapping.class)) continue;
@@ -101,7 +101,7 @@ public class WebDispatchServlet extends HttpServlet {
                 WebRequestMapping webRequestMapping = (WebRequestMapping) clazz.getAnnotation(WebRequestMapping.class);
                 baseUrl.append(webRequestMapping.value());
             }
-            Method [] methods = clazz.getDeclaredMethods();
+            Method[] methods = clazz.getDeclaredMethods();
             for (Method method : methods){
                 // 如果方法不带WebRequestMapping注解则终止
                 if (!method.isAnnotationPresent(WebRequestMapping.class)) continue;
@@ -255,9 +255,9 @@ public class WebDispatchServlet extends HttpServlet {
                         String param = req.getParameter(webRequestParam.value());
                         list.add(param);
                     }
-
                     if (parameter.getType() == Integer.class || parameter.getType() == int.class){
                         Integer param = Integer.parseInt(req.getParameter(webRequestParam.value()));
+                        list.add(param);
                     }
 
                 }

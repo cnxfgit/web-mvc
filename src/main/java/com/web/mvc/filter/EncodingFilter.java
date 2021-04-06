@@ -18,7 +18,7 @@ public class EncodingFilter implements Filter {
         response.setContentType("text/html;charset="+encoding);// 设置编码
         HttpServletRequest req = (HttpServletRequest)request;
         String xRequestedWith = req.getHeader("X-Requested-With");
-        if (xRequestedWith != null && xRequestedWith.indexOf("XMLHttpRequest") != -1) {
+        if (xRequestedWith != null && xRequestedWith.indexOf("XMLHttpRequest") != -1) { // 判断是否异步请求
             response.setContentType("application/json");
         }
         request.setCharacterEncoding(encoding);

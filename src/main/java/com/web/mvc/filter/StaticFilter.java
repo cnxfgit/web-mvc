@@ -16,8 +16,7 @@ public class StaticFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest)request;
-        String suffix = req.getRequestURL().substring(req.getRequestURL().lastIndexOf("."));
-        System.out.println(suffix);
+        String suffix = req.getRequestURL().substring(req.getRequestURL().lastIndexOf("."));// 求出后缀，赋予相应格式的content
         if (".css".equals(suffix)){
             response.setContentType("text/css;charset="+encoding);
         }else if (".js".equals(suffix)){
