@@ -8,21 +8,21 @@ public class $ {
     /**
      * json常量
      */
-    private static final String OBJ_LEFT = "{";
-    private static final String OBJ_RIGHT = "}";
-    private static final String DOUBLE_QUOTED = "\"";
-    private static final String COLON = ":";
+    private static final char OBJ_LEFT = '{';
+    private static final char OBJ_RIGHT = '}';
+    private static final char DOUBLE_QUOTED = '\"';
+    private static final char COLON = ':';
     private static final String NULL = "null";
-    private static final String COMMA = ",";
-    private static final String ARR_LEFT = "[";
-    private static final String ARR_RIGHT = "]";
+    private static final char COMMA = ',';
+    private static final char ARR_LEFT = '[';
+    private static final char ARR_RIGHT = ']';
 
 
     public $(String s){
         toJson(null);
     }
 
-    public boolean isEmpty(String str){
+    public static boolean isEmpty(String str){
         return str==null||"".equals(str);
     }
 
@@ -30,8 +30,9 @@ public class $ {
      * json的arr回调
      */
     public static String toJson(List<?> list) {
-        if (list == null || list.size() == 0) return ARR_LEFT+ARR_RIGHT;
-        StringBuilder json = new StringBuilder(ARR_LEFT);
+        StringBuilder json = new StringBuilder();
+        json.append(ARR_LEFT);
+        if (list == null || list.size() == 0) return json.append(ARR_RIGHT).toString();// 空则返回[]
         for (Object object:list) {
             json.append(toJson(object));
             json.append(COMMA);
@@ -45,26 +46,27 @@ public class $ {
     public static String toJson(Object obj){
         Class clazz = obj.getClass();
         Field[] fields = clazz.getDeclaredFields();
-        StringBuilder json = new StringBuilder(OBJ_LEFT);
+        StringBuilder json = new StringBuilder();
+        json.append(OBJ_LEFT);
         for (Field field:fields) {
             field.setAccessible(true);
             try {
                 Object fieldValue = field.get(obj);
+                json.append(DOUBLE_QUOTED).append(field.getName()).append(DOUBLE_QUOTED).append(COLON);
                 if (fieldValue!=null) {// 不为null的话匹配类型
                     if (fieldValue instanceof String){
-                        json.append(DOUBLE_QUOTED).append(field.getName()).append(DOUBLE_QUOTED).append(COLON)
-                                .append(DOUBLE_QUOTED).append(fieldValue).append(DOUBLE_QUOTED);
+                        json.append(DOUBLE_QUOTED).append(fieldValue).append(DOUBLE_QUOTED);
                     }else if (fieldValue instanceof Integer||fieldValue instanceof Long||
                             fieldValue instanceof Byte||fieldValue instanceof Short||
                             fieldValue instanceof Double||fieldValue instanceof Float||
                             fieldValue instanceof Boolean||fieldValue instanceof Character){
-                        json.append(DOUBLE_QUOTED).append(field.getName()).append(DOUBLE_QUOTED).append(COLON).append(fieldValue);
+                        json.append(fieldValue);
                     }else if (fieldValue instanceof List){
                         List list = (List) fieldValue;
-                        json.append(DOUBLE_QUOTED).append(field.getName()).append(DOUBLE_QUOTED).append(COLON).append(toJson(list));
+                        json.append(toJson(list));
                     }
                 }else {
-                    json.append(DOUBLE_QUOTED).append(field.getName()).append(DOUBLE_QUOTED).append(COLON).append(NULL);
+                    json.append(NULL);
                 }
                 json.append(COMMA);
             } catch (IllegalAccessException e) {

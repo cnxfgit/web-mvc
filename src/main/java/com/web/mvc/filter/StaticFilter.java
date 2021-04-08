@@ -1,9 +1,12 @@
 package com.web.mvc.filter;
 
 import javax.servlet.*;
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.annotation.WebInitParam;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
+@WebFilter(initParams = @WebInitParam(name = "encoding",value = "UTF-8"),urlPatterns = {"*.css","*.js"})
 public class StaticFilter implements Filter {
 
     private String encoding = null;

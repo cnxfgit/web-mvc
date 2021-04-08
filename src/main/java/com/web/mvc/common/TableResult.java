@@ -15,7 +15,7 @@ public class TableResult {
         result.setCode(0);
         result.setData(object);
         result.setCount(count);
-        result.setMsg("");
+        result.setMsg("ok");
         return result;
     }
 

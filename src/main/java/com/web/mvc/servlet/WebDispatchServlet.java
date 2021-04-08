@@ -9,9 +9,12 @@ import com.web.mvc.annotation.component.WebService;
 import com.web.mvc.annotation.param.WebRequestBody;
 import com.web.mvc.annotation.param.WebRequestParam;
 import com.web.mvc.content.BeanContent;
+import com.web.mvc.util.$;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebInitParam;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,6 +29,8 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.*;
 
+@WebServlet(initParams = @WebInitParam(name = "configLocation", value = "classpath:application.properties"),
+urlPatterns = "/*")
 public class WebDispatchServlet extends HttpServlet {
 
     // 配置文件
@@ -241,7 +246,8 @@ public class WebDispatchServlet extends HttpServlet {
                                 field.set(object,req.getParameter(fieldName));
                             }
                             if (fieldType == Integer.class || fieldType == int.class){
-                                field.set(object,Integer.parseInt(req.getParameter(fieldName)));
+                                String i = req.getParameter(fieldName);
+                                if (!$.isEmpty(i)) field.set(object,Integer.parseInt(i));
                             }
                         }
                         list.add(object);
@@ -256,7 +262,11 @@ public class WebDispatchServlet extends HttpServlet {
                         list.add(param);
                     }
                     if (parameter.getType() == Integer.class || parameter.getType() == int.class){
-                        Integer param = Integer.parseInt(req.getParameter(webRequestParam.value()));
+                        String i = req.getParameter(webRequestParam.value());
+                        Integer param = null;
+                        if (!$.isEmpty(i)){
+                            param = Integer.parseInt(i);
+                        }
                         list.add(param);
                     }
 

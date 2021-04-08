@@ -21,8 +21,10 @@ public class UserController {
 
     @WebRequestMapping("/get")
     public String getUser(@WebRequestParam("page") Integer page,
-                          @WebRequestParam("limit") Integer limit){
+                          @WebRequestParam("limit") Integer limit,
+                          @WebRequestBody User user){
         List<User> list = userService.getUser();
+        System.out.println(user);
         System.out.println(limit);
         System.out.println(page);
         return $.toJson(TableResult.ok(list,list.size()));
