@@ -1,6 +1,6 @@
 package com.web.mvc.controller;
 
-import com.web.mvc.annotation.WebAutowired;
+import com.web.mvc.annotation.bean.WebAutowired;
 import com.web.mvc.annotation.WebRequestMapping;
 import com.web.mvc.annotation.component.WebRestController;
 import com.web.mvc.annotation.param.WebRequestBody;
@@ -25,6 +25,7 @@ public class UserController {
                           @WebRequestBody User user){
         List<User> list = userService.getUser();
         System.out.println(user);
+
         System.out.println(limit);
         System.out.println(page);
         return $.toJson(TableResult.ok(list,list.size()));

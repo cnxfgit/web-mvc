@@ -1,6 +1,6 @@
 package com.web.mvc.controller;
 
-import com.web.mvc.annotation.WebAutowired;
+import com.web.mvc.annotation.bean.WebAutowired;
 import com.web.mvc.annotation.component.WebService;
 import com.web.mvc.service.TestService;
 

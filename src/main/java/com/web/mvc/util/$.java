@@ -1,6 +1,8 @@
 package com.web.mvc.util;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 public class $ {
@@ -19,7 +21,27 @@ public class $ {
 
 
     public $(String s){
-        toJson(null);
+
+    }
+
+    public static List methods(Method[] methods){
+        List<Method> list = new ArrayList();
+        for (Method method:methods) {
+            list.add(method);
+        }
+        return list;
+    }
+
+    public static Object newInstance(Class clazz){
+        Object obj = null;
+        try {
+            obj = clazz.newInstance();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return obj;
     }
 
     public static boolean isEmpty(String str){

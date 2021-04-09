@@ -1,8 +1,8 @@
 package com.web.mvc.content;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class BeanContent {
 
@@ -11,7 +11,7 @@ public class BeanContent {
     private static BeanContent instance = new BeanContent();
 
     private BeanContent(){
-        beanMap = new HashMap<>();
+        beanMap = new ConcurrentHashMap<>();
     }
 
     public static BeanContent getInstance() {
