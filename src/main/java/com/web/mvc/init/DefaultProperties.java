@@ -60,6 +60,7 @@ public class DefaultProperties {
         content.setProp(PropertiesConstant.SCAN_PACKAGE,SCAN_PACKAGE);
         content.setProp(PropertiesConstant.ENCODING,ENCODING);
 
+        // 配置文件的配置将会覆盖默认配置
         Enumeration enumeration = properties.propertyNames();
         while (enumeration.hasMoreElements()){
             String name = (String)enumeration.nextElement();

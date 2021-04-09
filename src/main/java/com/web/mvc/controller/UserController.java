@@ -1,45 +1,43 @@
 package com.web.mvc.controller;
 
-import com.web.mvc.annotation.bean.WebAutowired;
-import com.web.mvc.annotation.WebRequestMapping;
-import com.web.mvc.annotation.component.WebRestController;
-import com.web.mvc.annotation.param.WebRequestBody;
-import com.web.mvc.annotation.param.WebRequestParam;
+import com.web.mvc.annotation.RequestMapping;
+import com.web.mvc.annotation.bean.Autowired;
+import com.web.mvc.annotation.component.RestController;
+import com.web.mvc.annotation.param.RequestBody;
+import com.web.mvc.annotation.param.RequestParam;
 import com.web.mvc.common.TableResult;
 import com.web.mvc.entity.User;
 import com.web.mvc.service.UserService;
-import com.web.mvc.util.$;
 
 import java.util.List;
 
-@WebRestController
-@WebRequestMapping("/user")
+@RestController
+@RequestMapping("/user")
 public class UserController {
 
-    @WebAutowired
+    @Autowired
     private UserService userService;
 
-    @WebRequestMapping("/get")
-    public String getUser(@WebRequestParam("page") Integer page,
-                          @WebRequestParam("limit") Integer limit,
-                          @WebRequestBody User user){
+    @RequestMapping("/get")
+    public TableResult getUser(@RequestParam("page") Integer page,
+                          @RequestParam("limit") Integer limit,
+                          @RequestBody User user){
         List<User> list = userService.getUser();
         System.out.println(user);
-
         System.out.println(limit);
         System.out.println(page);
-        return $.toJson(TableResult.ok(list,list.size()));
+        return TableResult.ok(list,list.size());
     }
 
-    @WebRequestMapping("/getByName")
-    public String getUserByName(@WebRequestParam("name") String name){
+    @RequestMapping("/getByName")
+    public User getUserByName(@RequestParam("name") String name){
         System.out.println(name);
         User user = userService.getUserByName(name);
-        return $.toJson(user);
+        return user;
     }
 
-    @WebRequestMapping("/add")
-    public String addUser(@WebRequestBody User user){
+    @RequestMapping("/add")
+    public String addUser(@RequestBody User user){
         System.out.println(user.toString());
         return user.toString();
     }

@@ -1,13 +1,13 @@
 package com.web.mvc.controller;
 
-import com.web.mvc.annotation.bean.WebAutowired;
-import com.web.mvc.annotation.component.WebService;
+import com.web.mvc.annotation.bean.Autowired;
+import com.web.mvc.annotation.component.Service;
 import com.web.mvc.service.TestService;
 
-@WebService
+@Service
 public class TestController {
 
-    @WebAutowired
+    @Autowired
     private TestService testService;
 
 }

@@ -5,6 +5,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Target(ElementType.PARAMETER)
-public @interface WebPathVariable {
+public @interface RequestParam {
     String value();
 }

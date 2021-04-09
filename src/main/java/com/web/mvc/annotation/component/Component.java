@@ -2,9 +2,9 @@ package com.web.mvc.annotation.component;
 
 import java.lang.annotation.*;
 
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
 @Target(ElementType.TYPE)
-public @interface WebService {
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Component {
     String value() default "";
 }

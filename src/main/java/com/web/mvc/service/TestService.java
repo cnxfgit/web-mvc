@@ -1,8 +1,8 @@
 package com.web.mvc.service;
 
-import com.web.mvc.annotation.component.WebService;
+import com.web.mvc.annotation.component.Service;
 
-@WebService
+@Service
 public class TestService {
 
 

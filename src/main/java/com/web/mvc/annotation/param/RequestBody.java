@@ -1,10 +1,10 @@
-package com.web.mvc.annotation.component;
+package com.web.mvc.annotation.param;
 
 import java.lang.annotation.*;
 
-@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface WebController {
+@Target(ElementType.PARAMETER)
+public @interface RequestBody {
     String value() default "";
 }

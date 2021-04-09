@@ -1,17 +1,17 @@
 package com.web.mvc.router;
 
-import com.web.mvc.annotation.WebRequestMapping;
-import com.web.mvc.annotation.component.WebController;
+import com.web.mvc.annotation.RequestMapping;
+import com.web.mvc.annotation.component.Controller;
 
-@WebController
+@Controller
 public class IndexRouter {
 
-    @WebRequestMapping("/index")
+    @RequestMapping("/index")
     public String index(){
         return "index";
     }
 
-    @WebRequestMapping("/user")
+    @RequestMapping("/user")
     public String user(){
         return "user";
     }

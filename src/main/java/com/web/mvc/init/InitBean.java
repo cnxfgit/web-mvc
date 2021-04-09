@@ -1,10 +1,10 @@
 package com.web.mvc.init;
 
-import com.web.mvc.annotation.bean.WebAutowired;
-import com.web.mvc.annotation.component.WebComponent;
-import com.web.mvc.annotation.component.WebController;
-import com.web.mvc.annotation.component.WebRestController;
-import com.web.mvc.annotation.component.WebService;
+import com.web.mvc.annotation.bean.Autowired;
+import com.web.mvc.annotation.component.Component;
+import com.web.mvc.annotation.component.Controller;
+import com.web.mvc.annotation.component.RestController;
+import com.web.mvc.annotation.component.Service;
 import com.web.mvc.constant.PropertiesConstant;
 import com.web.mvc.content.BeanContent;
 import com.web.mvc.content.PropertiesContent;
@@ -38,6 +38,7 @@ public class InitBean {
             logger.warning("==>扫描包失败!");
         }
         initInstance();
+        dependencyInjection();
     }
 
     private void dependencyInjection(){
@@ -45,12 +46,13 @@ public class InitBean {
             Field[] fields = entry.getValue().getClass().getDeclaredFields();
             for (Field field : fields){
                 // 判断属性有没有需要被注入的
-                if (!field.isAnnotationPresent(WebAutowired.class)) continue;
+                if (!field.isAnnotationPresent(Autowired.class)) continue;
                 field.setAccessible(true); // 强制授权
                 try {
                     field.set(entry.getValue(), beanContent.getBean(field.getType().getSimpleName()));
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
+                    logger.info("==>bean注入失败!");
                 }
             }
         }
@@ -63,10 +65,10 @@ public class InitBean {
                 Class clazz = Class.forName(className);
                 Object instance = null;
                 // 类型做key，实例作为value
-                if (clazz.isAnnotationPresent(WebController.class)||
-                    clazz.isAnnotationPresent(WebRestController.class)||
-                    clazz.isAnnotationPresent(WebService.class)||
-                    clazz.isAnnotationPresent(WebComponent.class)) {
+                if (clazz.isAnnotationPresent(Controller.class)||
+                    clazz.isAnnotationPresent(RestController.class)||
+                    clazz.isAnnotationPresent(Service.class)||
+                    clazz.isAnnotationPresent(Component.class)) {
                     instance = clazz.newInstance();
                     beanContent.setBean(clazz.getSimpleName(),instance);
                 }

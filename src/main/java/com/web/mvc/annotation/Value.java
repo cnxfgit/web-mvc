@@ -1,10 +1,10 @@
-package com.web.mvc.annotation.component;
+package com.web.mvc.annotation;
 
 import java.lang.annotation.*;
 
-@Target(ElementType.TYPE)
+@Target(ElementType.FIELD)
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-public @interface WebRestController {
+public @interface Value {
     String value() default "";
 }

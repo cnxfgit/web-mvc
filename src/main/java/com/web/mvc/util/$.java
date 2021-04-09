@@ -1,11 +1,17 @@
 package com.web.mvc.util;
 
+import com.web.mvc.content.BeanContent;
+
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 public class $ {
+
+    // bean容器
+    private static BeanContent beanContent = BeanContent.getInstance();
 
     /**
      * json常量
@@ -24,7 +30,27 @@ public class $ {
 
     }
 
-    public static List methods(Method[] methods){
+    public static Object invoke(Method method,String beanName,Object... args){
+        Object object = null;
+        try {
+            object = method.invoke(beanContent.getBean(beanName),args);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return object;
+    }
+
+    public static void setField(Field field,Object instance,Object value){
+        try {
+            field.set(instance,value);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static List<Method> methods(Method[] methods){
         List<Method> list = new ArrayList();
         for (Method method:methods) {
             list.add(method);
@@ -66,10 +92,11 @@ public class $ {
      *  转化实体类为json对象
      */
     public static String toJson(Object obj){
-        Class clazz = obj.getClass();
-        Field[] fields = clazz.getDeclaredFields();
         StringBuilder json = new StringBuilder();
         json.append(OBJ_LEFT);
+        if (obj == null) return json.append(OBJ_RIGHT).toString();
+        Class clazz = obj.getClass();
+        Field[] fields = clazz.getDeclaredFields();
         for (Field field:fields) {
             field.setAccessible(true);
             try {
