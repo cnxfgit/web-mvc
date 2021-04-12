@@ -8,7 +8,9 @@ import com.web.mvc.annotation.param.RequestParam;
 import com.web.mvc.constant.PropertiesConstant;
 import com.web.mvc.content.BeanContent;
 import com.web.mvc.content.PropertiesContent;
-import com.web.mvc.util.$;
+import com.web.mvc.util.JsonUtil;
+import com.web.mvc.util.ReflectUtil;
+import com.web.mvc.util.StringUtil;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -53,7 +55,7 @@ public class DispatchServlet extends HttpServlet {
     private boolean initViewMapping() {
         for (Map.Entry entry : beanContent.getEntrySet()) {
             Class clazz = entry.getValue().getClass();
-            // 如果不是WebController则终止
+            // 如果不是Controller则终止
             if (!clazz.isAnnotationPresent(Controller.class)) continue;
             StringBuilder baseUrl = new StringBuilder();
             if (clazz.isAnnotationPresent(RequestMapping.class)) {
@@ -62,13 +64,13 @@ public class DispatchServlet extends HttpServlet {
             }
             Method[] methods = clazz.getDeclaredMethods();
             for (Method method : methods) {
-                // 如果方法不带WebRequestMapping注解则终止
+                // 如果方法不带RequestMapping注解则终止
                 if (method.isAnnotationPresent(RequestMapping.class)) {
                     RequestMapping requestMapping = method.getAnnotation(RequestMapping.class);
                     StringBuilder stringBuilder = new StringBuilder(baseUrl);
                     stringBuilder.append(requestMapping.value());
                     String beanName = method.getDeclaringClass().getSimpleName();
-                    String viewUrl = viewPrefixSuffix[0] + $.invoke(method,beanName) + viewPrefixSuffix[1];
+                    String viewUrl = viewPrefixSuffix[0] + ReflectUtil.invoke(method,beanName) + viewPrefixSuffix[1];
                     viewMapping.put(stringBuilder.toString(), viewUrl);
 
                 }
@@ -81,7 +83,7 @@ public class DispatchServlet extends HttpServlet {
     private boolean initHandleMapping() {
         for (Map.Entry entry : beanContent.getEntrySet()) {
             Class clazz = entry.getValue().getClass();
-            // 如果不是WebRestController则终止
+            // 如果不是RestController则终止
             if (!clazz.isAnnotationPresent(RestController.class)) continue;
             StringBuilder baseUrl = new StringBuilder();
             if (clazz.isAnnotationPresent(RequestMapping.class)) {
@@ -89,7 +91,7 @@ public class DispatchServlet extends HttpServlet {
                 baseUrl.append(requestMapping.value());
             }
             Method[] methods = clazz.getDeclaredMethods();
-            $.methods(methods).stream().forEach(method->{
+            ReflectUtil.methods(methods).stream().forEach(method->{
                 // 如果方法不带WebRequestMapping注解则终止
                 if (method.isAnnotationPresent(RequestMapping.class)) {
                     RequestMapping requestMapping = method.getAnnotation(RequestMapping.class);
@@ -118,6 +120,7 @@ public class DispatchServlet extends HttpServlet {
     private void doDispatch(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String contextPath = req.getContextPath();
         String url = req.getRequestURI().replace(contextPath, "");
+
         if (viewMapping.containsKey(url)) {
             String view = viewMapping.get(url);
             try {
@@ -133,18 +136,18 @@ public class DispatchServlet extends HttpServlet {
                 if (parameter.isAnnotationPresent(RequestBody.class)) {
                     Class clazz = parameter.getType();
 
-                    Object object = $.newInstance(clazz);
+                    Object object = ReflectUtil.newInstance(clazz);
                     Field[] fields = object.getClass().getDeclaredFields();
                     for (Field field : fields) {
                         field.setAccessible(true);
                         Class<?> fieldType = field.getType();
                         String fieldName = field.getName();
                         if (fieldType == String.class) {
-                            $.setField(field, object, req.getParameter(fieldName));
+                            ReflectUtil.setField(field, object, req.getParameter(fieldName));
                         }
                         if (fieldType == Integer.class || fieldType == int.class) {
                             String i = req.getParameter(fieldName);
-                            if (!$.isEmpty(i)) $.setField(field, object, Integer.parseInt(i));
+                            if (!StringUtil.isEmpty(i)) ReflectUtil.setField(field, object, Integer.parseInt(i));
                         }
                     }
                     list.add(object);
@@ -158,7 +161,7 @@ public class DispatchServlet extends HttpServlet {
                     if (parameter.getType() == Integer.class || parameter.getType() == int.class) {
                         String i = req.getParameter(requestParam.value());
                         Integer param = null;
-                        if (!$.isEmpty(i)) {
+                        if (!StringUtil.isEmpty(i)) {
                             param = Integer.parseInt(i);
                         }
                         list.add(param);
@@ -168,7 +171,7 @@ public class DispatchServlet extends HttpServlet {
             String beanName = method.getDeclaringClass().getSimpleName();
             try {
                 Object result = method.invoke(beanContent.getBean(beanName), list.toArray());// 执行controller对应的方法
-                resp.getWriter().write($.toJson(result));
+                resp.getWriter().write(JsonUtil.toJson(result));
             } catch (Exception e) {
                 e.printStackTrace();
                 resp.getWriter().write(e.getMessage());

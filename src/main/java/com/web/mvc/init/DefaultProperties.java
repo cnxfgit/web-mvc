@@ -2,7 +2,7 @@ package com.web.mvc.init;
 
 import com.web.mvc.constant.PropertiesConstant;
 import com.web.mvc.content.PropertiesContent;
-import com.web.mvc.util.$;
+import com.web.mvc.util.StringUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -65,7 +65,7 @@ public class DefaultProperties {
         while (enumeration.hasMoreElements()){
             String name = (String)enumeration.nextElement();
             String value = properties.getProperty(name);
-            content.setProp(name,$.isEmpty(value)?"":value);
+            content.setProp(name, StringUtil.isEmpty(value)?"":value);
         }
     }
 

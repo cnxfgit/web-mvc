@@ -5,7 +5,7 @@ layui.use(['jquery','table'], function () {
 
     table.render({
         elem: '#user_table',
-        url: '/user/get?id=123aasd',
+        url: 'user/get?id=123aasd',
         toolbar: '#toolbarDemo',
         cols: [
             [
