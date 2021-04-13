@@ -8,6 +8,7 @@ import com.web.mvc.annotation.param.RequestParam;
 import com.web.mvc.constant.PropertiesConstant;
 import com.web.mvc.content.BeanContent;
 import com.web.mvc.content.PropertiesContent;
+import com.web.mvc.log.Log;
 import com.web.mvc.util.JsonUtil;
 import com.web.mvc.util.ReflectUtil;
 import com.web.mvc.util.StringUtil;
@@ -30,6 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @WebServlet(urlPatterns = "/*", loadOnStartup = 0)
 public class DispatchServlet extends HttpServlet {
 
+    private Log logger = Log.getLogger(DispatchServlet.class);
     // 配置文件
     private PropertiesContent propertiesContent = PropertiesContent.getInstance();
     // bean容器
@@ -47,9 +49,9 @@ public class DispatchServlet extends HttpServlet {
         viewPrefixSuffix[0] = propertiesContent.getProp(PropertiesConstant.VIEW_PREFIX);// 视图前缀
         viewPrefixSuffix[1] = propertiesContent.getProp(PropertiesConstant.VIEW_SUFFIX);// 视图后缀
 
-        if (!initHandleMapping()) throw new RuntimeException("==>url初始化失败!");
+        if (!initHandleMapping()) logger.err("==>url初始化失败!");
 
-        if (!initViewMapping()) throw new RuntimeException("==>视图初始化失败!");
+        if (!initViewMapping()) logger.err("==>视图初始化失败!");
     }
 
     private boolean initViewMapping() {
@@ -76,7 +78,7 @@ public class DispatchServlet extends HttpServlet {
                 }
             }
         }
-        System.out.println("==>视图映射装配完成!");
+        logger.info("视图映射装配完成!");
         return true;
     }
 
@@ -102,7 +104,7 @@ public class DispatchServlet extends HttpServlet {
             });
 
         }
-        System.out.println("==>url映射装配完成!");
+        logger.info("url映射装配完成!");
         return true;
     }
 

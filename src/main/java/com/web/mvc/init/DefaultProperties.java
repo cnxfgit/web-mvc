@@ -2,21 +2,21 @@ package com.web.mvc.init;
 
 import com.web.mvc.constant.PropertiesConstant;
 import com.web.mvc.content.PropertiesContent;
+import com.web.mvc.log.Log;
 import com.web.mvc.util.StringUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 public class DefaultProperties {
 
-    private static Logger logger = Logger.getLogger(DefaultProperties.class.getName());
+    private static Log logger = Log.getLogger(DefaultProperties.class);
     // 配置文件
-    static private Properties properties = new Properties();
+    private static Properties properties = new Properties();
     // properties容器
-    static private PropertiesContent content = PropertiesContent.getInstance();
+    private static PropertiesContent content = PropertiesContent.getInstance();
 
     public static final String APPLICATION_PROPERTIES = "application.properties";
 
@@ -30,9 +30,9 @@ public class DefaultProperties {
         InputStream ins = DefaultProperties.class.getClassLoader().getResourceAsStream(APPLICATION_PROPERTIES);
         try {
             properties.load(ins);
-            logger.info("==>配置文件加载成功!");
+            logger.info("配置文件加载成功!");
         } catch (IOException e) {
-            logger.warning("==>配置文件加载失败!");
+            logger.err("配置文件加载失败!");
             e.printStackTrace();
         }finally {
             if (ins != null)
@@ -44,9 +44,9 @@ public class DefaultProperties {
         }
         try {
             loadProperties();
-            logger.info("==>配置文件读取成功！");
+            logger.info("配置文件读取成功！");
         }catch (Exception e){
-            logger.warning("==>配置文件读取失败！");
+            logger.err("配置文件读取失败！");
             e.printStackTrace();
         }
 

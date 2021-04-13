@@ -8,6 +8,7 @@ import com.web.mvc.annotation.component.Service;
 import com.web.mvc.constant.PropertiesConstant;
 import com.web.mvc.content.BeanContent;
 import com.web.mvc.content.PropertiesContent;
+import com.web.mvc.log.Log;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -16,11 +17,10 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 public class InitBean {
 
-    private static Logger logger = Logger.getLogger(DefaultProperties.class.getName());
+    private Log logger = Log.getLogger(DefaultProperties.class);
     // 配置文件
     private PropertiesContent propertiesContent = PropertiesContent.getInstance();
     // 扫描指定包下的类名
@@ -32,10 +32,10 @@ public class InitBean {
         String packagePath = propertiesContent.getProp(PropertiesConstant.SCAN_PACKAGE);
         try {
             scanClass(packagePath);
-            logger.warning("==>扫描包成功!");
+            logger.info("扫描包成功!");
         }catch (Exception e){
             e.printStackTrace();
-            logger.warning("==>扫描包失败!");
+            logger.err("扫描包失败!");
         }
         initInstance();
         dependencyInjection();
@@ -52,11 +52,11 @@ public class InitBean {
                     field.set(entry.getValue(), beanContent.getBean(field.getType().getSimpleName()));
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
-                    logger.info("==>bean注入失败!");
+                    logger.err("bean注入失败!");
                 }
             }
         }
-        logger.info("==>bean注入成功!");
+        logger.info("bean注入成功!");
     }
 
     private void initInstance(){
@@ -73,10 +73,10 @@ public class InitBean {
                     beanContent.setBean(clazz.getSimpleName(),instance);
                 }
             }
-            logger.info("==>初始化bean成功!");
+            logger.info("初始化bean成功!");
         }catch (Exception e){
             e.printStackTrace();
-            logger.info("==>初始化bean失败!");
+            logger.err("初始化bean失败!");
         }
     }
 
