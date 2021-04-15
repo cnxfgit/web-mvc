@@ -13,8 +13,8 @@ public class ContextLoaderListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        DefaultProperties.init();
-        new InitBean().init();
+        DefaultProperties.init(); // 配置文件初始化
+        new InitBean().init();// bean初始化及装配
     }
 
     @Override

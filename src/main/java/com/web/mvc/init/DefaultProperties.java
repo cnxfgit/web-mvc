@@ -23,7 +23,7 @@ public class DefaultProperties {
     public static final String VIEW_PREFIX = "/WEB-INF/templates/";
     public static final String VIEW_SUFFIX = ".html";
     public static final String ENCODING = "UTF-8";
-    public static final String SCAN_PACKAGE = "";
+    public static final String SCAN_PACKAGE = "com";
 
     public static void init(){
         // 获得配置文件的输入流

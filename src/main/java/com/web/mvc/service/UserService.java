@@ -18,4 +18,16 @@ public class UserService {
     public User getUserByName(String name){
         return userContent.getUser(name);
     }
+
+    public boolean addUser(User user){
+        return userContent.addUser(user);
+    }
+
+    public boolean deleteUser(String id){
+        return userContent.deleteUser(id);
+    }
+
+    public boolean updateUser(User user){
+        return userContent.putUser(user);
+    }
 }

@@ -5,12 +5,11 @@ import com.web.mvc.content.PropertiesContent;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
-import javax.servlet.annotation.WebInitParam;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-@WebFilter(initParams = @WebInitParam(name = "encoding",value = "UTF-8"),urlPatterns = {"*.css","*.js"})
-public class StaticFilter implements Filter {
+@WebFilter(urlPatterns = {"*.css","*.js","*.ico"})
+public class BStaticFilter implements Filter {
 
     // 配置文件
     private PropertiesContent propertiesContent = PropertiesContent.getInstance();
@@ -23,7 +22,7 @@ public class StaticFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest req = (HttpServletRequest)request;
+        HttpServletRequest req = (HttpServletRequest) request;
         String suffix = req.getRequestURL().substring(req.getRequestURL().lastIndexOf("."));// 求出后缀，赋予相应格式的content
         switch (suffix){
             case ".css":
@@ -32,9 +31,11 @@ public class StaticFilter implements Filter {
             case ".js":
                 response.setContentType("text/javascript;charset="+encoding);
                 break;
+            case ".ico":
+                response.setContentType("image/x-icon;charset="+encoding);
+                break;
             default: response.setContentType("text/html;charset="+encoding);
         }
-
         chain.doFilter(request,response);
     }
 

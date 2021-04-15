@@ -49,9 +49,9 @@ public class DispatchServlet extends HttpServlet {
         viewPrefixSuffix[0] = propertiesContent.getProp(PropertiesConstant.VIEW_PREFIX);// 视图前缀
         viewPrefixSuffix[1] = propertiesContent.getProp(PropertiesConstant.VIEW_SUFFIX);// 视图后缀
 
-        if (!initHandleMapping()) logger.err("==>url初始化失败!");
+        if (!initHandleMapping()) logger.err("url初始化失败!");
 
-        if (!initViewMapping()) logger.err("==>视图初始化失败!");
+        if (!initViewMapping()) logger.err("视图初始化失败!");
     }
 
     private boolean initViewMapping() {
@@ -74,7 +74,6 @@ public class DispatchServlet extends HttpServlet {
                     String beanName = method.getDeclaringClass().getSimpleName();
                     String viewUrl = viewPrefixSuffix[0] + ReflectUtil.invoke(method,beanName) + viewPrefixSuffix[1];
                     viewMapping.put(stringBuilder.toString(), viewUrl);
-
                 }
             }
         }
@@ -153,7 +152,6 @@ public class DispatchServlet extends HttpServlet {
                         }
                     }
                     list.add(object);
-
                 } else if (parameter.isAnnotationPresent(RequestParam.class)) {
                     RequestParam requestParam = parameter.getAnnotation(RequestParam.class);
                     if (parameter.getType() == String.class) {
@@ -168,6 +166,10 @@ public class DispatchServlet extends HttpServlet {
                         }
                         list.add(param);
                     }
+                }else if (parameter.getType() == HttpServletRequest.class){
+                    list.add(req);
+                }else if (parameter.getType() == HttpServletResponse.class){
+                    list.add(resp);
                 }
             }
             String beanName = method.getDeclaringClass().getSimpleName();
@@ -176,7 +178,8 @@ public class DispatchServlet extends HttpServlet {
                 resp.getWriter().write(JsonUtil.toJson(result));
             } catch (Exception e) {
                 e.printStackTrace();
-                resp.getWriter().write(e.getMessage());
+                resp.setStatus(500);
+                resp.getWriter().write(e.toString());
             }
         } else {
             resp.setStatus(404);

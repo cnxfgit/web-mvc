@@ -84,7 +84,7 @@ public class InitBean {
         String path = this.getClass().getClassLoader().getResource("/" + packagePath.replaceAll("\\.", "/")).getPath();
         URL url = null;
         try {// 有些系统需要指定字符集，否则会乱码失效
-            path = "file:"+ URLDecoder.decode(path,"utf-8");
+            path = "file:"+ URLDecoder.decode(path,propertiesContent.getProp(PropertiesConstant.ENCODING));
             url = new URL(path);
         }catch (Exception e){
             e.printStackTrace();
