@@ -11,8 +11,8 @@ public class UserService {
 
     UserContent userContent = UserContent.getInstance();
 
-    public List<User> getUser(){
-        return userContent.getAllUser();
+    public List<User> getUser(String id,Integer age){
+        return userContent.getAllUser(id,age);
     }
 
     public User getUserByName(String name){

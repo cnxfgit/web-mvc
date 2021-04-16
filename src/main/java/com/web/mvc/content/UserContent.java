@@ -2,6 +2,7 @@ package com.web.mvc.content;
 
 import com.web.mvc.entity.User;
 import com.web.mvc.init.InitUsers;
+import com.web.mvc.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,10 +33,14 @@ public class UserContent {
         return null;
     }
 
-    public List<User> getAllUser(){
+    public List<User> getAllUser(String id,Integer age){
         if (userMap.isEmpty()) return new ArrayList<>();
         List<User> list = new ArrayList<>();
         for (Map.Entry<String, User> entry : userMap.entrySet()) {
+            if (!StringUtil.isEmpty(id) && !entry.getValue().getId().equals(id))
+                continue;
+            if (age!=null && entry.getValue().getAge()!=age)
+                continue;
             list.add(entry.getValue());
         }
         return list;

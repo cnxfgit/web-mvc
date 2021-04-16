@@ -8,6 +8,7 @@ import com.web.mvc.annotation.param.RequestParam;
 import com.web.mvc.common.Result;
 import com.web.mvc.common.TableResult;
 import com.web.mvc.entity.User;
+import com.web.mvc.log.Log;
 import com.web.mvc.service.UserService;
 
 import java.util.List;
@@ -16,16 +17,19 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController {
 
+    Log logger = Log.getLogger(UserController.class);
+
     @Autowired
     private UserService userService;
 
     @RequestMapping("/get")
-    public TableResult getUser(@RequestParam("page") Integer page,
-                               @RequestParam("limit") Integer limit){
-
-        List<User> list = userService.getUser();
-        System.out.println(limit);
-        System.out.println(page);
+    public TableResult getUser(@RequestParam("page") String page,
+                               @RequestParam("limit") String limit,
+                               @RequestParam("id") String id,
+                               @RequestParam("age") Integer age){
+        logger.info(page);
+        logger.info(limit);
+        List<User> list = userService.getUser(id,age);
         return TableResult.ok(list,list.size());
     }
 

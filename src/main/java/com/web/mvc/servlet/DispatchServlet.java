@@ -5,6 +5,7 @@ import com.web.mvc.annotation.component.Controller;
 import com.web.mvc.annotation.component.RestController;
 import com.web.mvc.annotation.param.RequestBody;
 import com.web.mvc.annotation.param.RequestParam;
+import com.web.mvc.common.Result;
 import com.web.mvc.constant.PropertiesConstant;
 import com.web.mvc.content.BeanContent;
 import com.web.mvc.content.PropertiesContent;
@@ -121,6 +122,11 @@ public class DispatchServlet extends HttpServlet {
     private void doDispatch(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String contextPath = req.getContextPath();
         String url = req.getRequestURI().replace(contextPath, "");
+        if (url.endsWith("/")) {
+            url = url.substring(0,url.length()-1);// 结尾为/则去掉再匹配
+            resp.sendRedirect(url);
+            return;
+        }
 
         if (viewMapping.containsKey(url)) {
             String view = viewMapping.get(url);
@@ -179,7 +185,7 @@ public class DispatchServlet extends HttpServlet {
             } catch (Exception e) {
                 e.printStackTrace();
                 resp.setStatus(500);
-                resp.getWriter().write(e.toString());
+                resp.getWriter().write(JsonUtil.toJson(Result.ok(e.toString())));
             }
         } else {
             resp.setStatus(404);

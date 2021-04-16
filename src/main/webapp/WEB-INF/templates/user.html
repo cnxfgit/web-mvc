@@ -6,8 +6,44 @@
 </head>
 <body style="background-color: #e7eaed;padding: 1%">
 <div style="background-color: #FFFFFF">
+    <fieldset class="table-search-fieldset">
+        <legend>搜索信息</legend>
+        <form class="layui-form" action="" id="search_form">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">id</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="id" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">年龄</label>
+                    <div class="layui-input-inline">
+                        <input type="number" name="age" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <button type="button" lay-submit lay-filter="search" class="layui-btn layui-btn-primary">
+                        <i class="layui-icon"></i>查询</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">
+                        <i class="layui-icon layui-icon-fonts-clear"></i>重置</button>
+                </div>
+            </div>
+        </form>
+    </fieldset>
     <table class="layui-hide" id="user_table" lay-filter="userTable"></table>
 </div>
+
+<script type="text/html" id="toolbar_user">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-normal layui-btn-sm" lay-event="add">新增</button>
+    </div>
+</script>
+<script type="text/html" id="bar_user">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
 </body>
 <script type="text/javascript" src="static/js/common-script.js"></script>
 <script type="text/javascript" src="static/js/user.js"></script>
