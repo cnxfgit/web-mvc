@@ -1,8 +1,9 @@
-layui.use(['jquery','table'], function () {
+layui.use(['jquery','table','form','layer'], function () {
 
     let $ = layui.jquery,
         table = layui.table,
-        form = layui.form;
+        form = layui.form,
+        layer = layui.layer;
 
     form.on('submit(search)', function (data) {
         let id = data.field.id;
@@ -35,5 +36,19 @@ layui.use(['jquery','table'], function () {
         limit: 15,
         page: true,
         id: 'userTable'
+    });
+
+    table.on('toolbar(userTable)', function (obj) {
+        if (obj.event === 'add') {  // 监听添加操作
+            let index = layer.open({
+                title: '添加用户',
+                type: 2,
+                shade: 0.2,
+                maxmin: true,
+                shadeClose: true,
+                area: ['50%', '80%'],
+                content: 'user/add',
+            });
+        }
     });
 });

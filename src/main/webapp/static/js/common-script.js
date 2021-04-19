@@ -1,1 +1,1 @@
-document.write('<script src="static/layui/layui.js"></script>');
+document.write('<script src="/static/layui/layui.js"></script>');

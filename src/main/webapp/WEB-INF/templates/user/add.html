@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>添加用户</title>
+    <script type="text/javascript" src="/static/js/common-header.js"></script>
+</head>
+<body>
+<div style="">
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label required">用户id</label>
+            <div class="layui-input-block">
+            <input type="text" name="id" class="layui-input" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">用户名</label>
+            <div class="layui-input-block">
+                <input type="text" name="name" class="layui-input" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">年龄</label>
+            <div class="layui-input-block">
+                <input type="text" name="age" class="layui-input" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="saveBtn">确认保存</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+<script type="text/javascript" src="/static/js/common-script.js"></script>
+<script type="text/javascript" src="/static/js/user/add.js"></script>
+</html>

@@ -13,7 +13,12 @@ public class IndexRouter {
 
     @RequestMapping("/user")
     public String user(){
-        return "user";
+        return "user/user";
+    }
+
+    @RequestMapping("/user/add")
+    public String userAdd(){
+        return "user/add";
     }
 
 }
