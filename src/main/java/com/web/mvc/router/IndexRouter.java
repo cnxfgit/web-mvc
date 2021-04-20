@@ -11,14 +11,25 @@ public class IndexRouter {
         return "index";
     }
 
-    @RequestMapping("/user")
-    public String user(){
-        return "user/user";
+    @RequestMapping("/")
+    public String index2(){
+        return "index";
     }
 
-    @RequestMapping("/user/add")
+    @RequestMapping("/user")
+    public String user(){
+        return "user/list";
+    }
+
+    @RequestMapping("/user/addPage")
     public String userAdd(){
         return "user/add";
+    }
+
+
+    @RequestMapping("/user/editPage")
+    public String userEdit(){
+        return "user/edit";
     }
 
 }

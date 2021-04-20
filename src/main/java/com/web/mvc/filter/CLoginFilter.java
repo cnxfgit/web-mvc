@@ -22,6 +22,7 @@ public class CLoginFilter implements Filter {
         HttpSession session = req.getSession();
         session.setMaxInactiveInterval(5);
         if (session.getAttribute("username") != null) chain.doFilter(request,response);
+        else resp.sendRedirect("/index");
     }
 
     @Override

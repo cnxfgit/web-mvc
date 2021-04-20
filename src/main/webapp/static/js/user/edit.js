@@ -1,13 +1,19 @@
 layui.use(['jquery','form','layer'], function () {
-
     let $ = layui.jquery,
         form = layui.form,
         layer = layui.layer;
 
+    this.setField = function(data){
+        for (let field in data) {
+            let str = "input[name='"+field+"']";
+            $(str).val(data[field]);
+        }
+    };
+
     // 提交表单
     form.on('submit(saveBtn)', function (data) {
         $.ajax({
-            url: '/user/add',
+            url: '/user/update',
             type: 'POST',
             data: data.field,
             success: function (result) {

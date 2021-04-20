@@ -21,7 +21,7 @@ layui.use(['jquery','table','form','layer'], function () {
 
     table.render({
         elem: '#user_table',
-        url: 'user/get',
+        url: '/user/get',
         toolbar: '#toolbar_user',
         defaultToolbar: [],
         cols: [
@@ -40,15 +40,71 @@ layui.use(['jquery','table','form','layer'], function () {
 
     table.on('toolbar(userTable)', function (obj) {
         if (obj.event === 'add') {  // 监听添加操作
-            let index = layer.open({
+            layer.open({
                 title: '添加用户',
                 type: 2,
-                shade: 0.2,
                 maxmin: true,
-                shadeClose: true,
                 area: ['50%', '80%'],
-                content: 'user/add',
+                content: '/user/addPage',
+                end: function() {
+                    location.reload();
+                }
             });
         }
     });
+
+    table.on('tool(userTable)', function (obj) {
+        if (obj.event === 'del') {
+            let win = layer.open({
+                title: '警告',
+                content: '确认删除id为' + obj.data.id + '的用户吗?',
+                btn: ['确认','取消'],
+                yes: function () {
+                    layer.close(win);
+                    $.ajax({
+                        url: '/user/delete',
+                        type: 'POST',
+                        data: obj.data,
+                        success: function (result) {
+                            if (result.code === 200){
+                                layer.open({
+                                    title: '后台正常',
+                                    content: result.msg
+                                });
+                            }else {
+                                layer.open({
+                                    title: '后台正常',
+                                    content: result.msg
+                                });
+                            }
+                        },
+                        error: function (result) {
+                            layer.open({
+                                title: '后台异常',
+                                content: result.msg
+                            });
+                        }
+                    });
+                },
+            });
+        }else if (obj.event === 'edit'){
+            tableCol = obj.event.data;
+            let index = layer.open({
+                title: '编辑用户',
+                type: 2,
+                maxmin: true,
+                area: ['50%', '80%'],
+                content: '/user/editPage',
+                success: function () {
+                    // 获取子页面的iframe的唯一id
+                    let iframe = window['layui-layer-iframe' + index];
+                    iframe.layui.setField(obj.data);// 向新页面赋值参数
+                },
+                end: function() {
+                    location.reload();
+                }
+            });
+        }
+    });
+
 });

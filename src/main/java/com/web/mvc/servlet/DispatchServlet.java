@@ -122,11 +122,11 @@ public class DispatchServlet extends HttpServlet {
     private void doDispatch(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String contextPath = req.getContextPath();
         String url = req.getRequestURI().replace(contextPath, "");
-        if (url.endsWith("/")) {
-            url = url.substring(0,url.length()-1);// 结尾为/则去掉再匹配
-            resp.sendRedirect(url);
-            return;
-        }
+//        if (url.endsWith("/")) {
+//            url = url.substring(0,url.length()-1);// 结尾为/则去掉再匹配
+//            resp.sendRedirect(url);
+//            return;
+//        }
 
         if (viewMapping.containsKey(url)) {
             String view = viewMapping.get(url);
