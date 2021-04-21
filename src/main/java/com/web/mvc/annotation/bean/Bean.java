@@ -1,9 +1,0 @@
-package com.web.mvc.annotation.bean;
-
-import java.lang.annotation.*;
-
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-@Documented
-public @interface Bean {
-}
