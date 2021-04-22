@@ -1,5 +1,6 @@
 package com.web.mvc.framework.init;
 
+import com.web.mvc.framework.annotation.Value;
 import com.web.mvc.framework.annotation.bean.Autowired;
 import com.web.mvc.framework.annotation.component.Component;
 import com.web.mvc.framework.annotation.component.Controller;
@@ -44,36 +45,30 @@ public class InitBean {
             e.printStackTrace();
             logger.err("扫描包失败!");
         }
-        initInstance();
-        dependencyInjection();
-        for (String c : classNames) {
-            System.out.println("============" + c);
-        }
+        initInstance();// 初始化bean
+        dependencyInjection();// 依赖注入
+        valueInjection();
     }
 
-    private void scanClassWithJar(String jarPath, String packagePath) {
-
-        String[] jarInfo = jarPath.split("!");
-        String jarFilePath = jarInfo[0].substring(jarInfo[0].indexOf("/"));
-        packagePath = packagePath.replaceAll("\\.", "/");
-        try {
-            JarFile jarFile = new JarFile(jarFilePath);
-            Enumeration<JarEntry> entrys = jarFile.entries();
-            while (entrys.hasMoreElements()) {
-                JarEntry jarEntry = entrys.nextElement();
-                String entryName = jarEntry.getName();
-                if (entryName.endsWith(".class")) {
-                    if (entryName.startsWith(packagePath)) {
-                        entryName = entryName.replace("/", ".").substring(0, entryName.lastIndexOf("."));
-                        classNames.add(entryName);
-                    }
+    private void valueInjection() {
+        for (Map.Entry<String, Object> entry : beanContent.getEntrySet()) {
+            Field[] fields = entry.getValue().getClass().getDeclaredFields();
+            for (Field field : fields) {
+                // 判断属性有没有需要被注入的
+                if (!field.isAnnotationPresent(Value.class)) continue;
+                field.setAccessible(true); // 强制授权
+                Value value = field.getAnnotation(Value.class);
+                try {
+                    field.set(entry.getValue(), propertiesContent.getProp(value.value()));
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                    logger.err("@Value注入失败!");
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-
+        logger.info("@Value注入成功!");
     }
+
 
     private void dependencyInjection() {
         for (Map.Entry<String, Object> entry : beanContent.getEntrySet()) {
@@ -129,6 +124,30 @@ public class InitBean {
             } else if (file.getName().contains(".class")) {
                 classNames.add((packagePath + "." + file.getName().replaceAll(".class", "")));
             }
+        }
+    }
+
+    // jar包形式的扫包
+    private void scanClassWithJar(String jarPath, String packagePath) {
+
+        String[] jarInfo = jarPath.split("!");
+        String jarFilePath = jarInfo[0].substring(jarInfo[0].indexOf("/"));
+        packagePath = packagePath.replaceAll("\\.", "/");
+        try {
+            JarFile jarFile = new JarFile(jarFilePath);
+            Enumeration<JarEntry> entries = jarFile.entries();// 获取jar包中所有文件
+            while (entries.hasMoreElements()) {
+                JarEntry jarEntry = entries.nextElement();
+                String entryName = jarEntry.getName();
+                if (entryName.endsWith(".class")) {
+                    if (entryName.startsWith(packagePath)) {
+                        entryName = entryName.replace("/", ".").substring(0, entryName.lastIndexOf("."));
+                        classNames.add(entryName);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

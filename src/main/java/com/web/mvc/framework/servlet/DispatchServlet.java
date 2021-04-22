@@ -125,7 +125,7 @@ public class DispatchServlet extends HttpServlet {
             String view = viewMapping.get(url);
             try {
                 req.setAttribute("hide","true");
-                req.getRequestDispatcher(view).forward(req, resp);// 转发致default Servlet
+                req.getRequestDispatcher(view).forward(req, resp);// 转发致resource Servlet
             } catch (ServletException e) {
                 e.printStackTrace();
             }

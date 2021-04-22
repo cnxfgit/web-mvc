@@ -1,5 +1,6 @@
 package com.web.mvc.framework;
 
+import com.web.mvc.framework.annotation.WebMvcRun;
 import com.web.mvc.framework.filter.GlobalFilter;
 import com.web.mvc.framework.filter.LoginFilter;
 import com.web.mvc.framework.listener.ContextLoaderListener;
@@ -18,9 +19,18 @@ public class WebMvcApplication {
     private static Log logger = Log.getLogger(WebMvcApplication.class);
 
     public static void run(Class mainClass, Integer port, String... args){
+        if (mainClass.isAnnotationPresent(WebMvcRun.class)){
+            start(port);
+        }else logger.err("启动失败!无法识别启动类!");
+    }
+
+    public static void start(Integer port){
         Tomcat tomcat = new Tomcat();
 
         tomcat.setPort(port);
+//        Connector connector = new Connector();
+//        connector.setURIEncoding("");
+//        tomcat.setConnector(connector);
 
         StandardContext context = new StandardContext();
         context.setPath("/");
@@ -81,7 +91,6 @@ public class WebMvcApplication {
 
         context.addFilterDef(loginFilter);
         context.addFilterMap(loginFilterMapping);
-
     }
 
 }
