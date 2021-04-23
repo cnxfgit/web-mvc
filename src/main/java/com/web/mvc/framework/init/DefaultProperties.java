@@ -3,6 +3,7 @@ package com.web.mvc.framework.init;
 import com.web.mvc.framework.constant.PropertiesConstant;
 import com.web.mvc.framework.content.PropertiesContent;
 import com.web.mvc.framework.log.Log;
+import com.web.mvc.framework.log.LogFactory;
 import com.web.mvc.framework.util.StringUtil;
 
 import java.io.IOException;
@@ -12,7 +13,7 @@ import java.util.Properties;
 
 public class DefaultProperties {
 
-    private static Log logger = Log.getLogger(DefaultProperties.class);
+    private static Log logger = LogFactory.getSimpleLog(DefaultProperties.class);
     // 配置文件
     private static Properties properties = new Properties();
     // properties容器

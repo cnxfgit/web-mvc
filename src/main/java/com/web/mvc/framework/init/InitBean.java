@@ -2,6 +2,7 @@ package com.web.mvc.framework.init;
 
 import com.web.mvc.framework.annotation.Value;
 import com.web.mvc.framework.annotation.bean.Autowired;
+import com.web.mvc.framework.annotation.bean.Bean;
 import com.web.mvc.framework.annotation.component.Component;
 import com.web.mvc.framework.annotation.component.Controller;
 import com.web.mvc.framework.annotation.component.RestController;
@@ -10,9 +11,11 @@ import com.web.mvc.framework.constant.PropertiesConstant;
 import com.web.mvc.framework.content.BeanContent;
 import com.web.mvc.framework.content.PropertiesContent;
 import com.web.mvc.framework.log.Log;
+import com.web.mvc.framework.log.LogFactory;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -24,7 +27,7 @@ import java.util.jar.JarFile;
 
 public class InitBean {
 
-    private Log logger = Log.getLogger(DefaultProperties.class);
+    private Log logger = LogFactory.getSimpleLog(DefaultProperties.class);
     // 配置文件
     private PropertiesContent propertiesContent = PropertiesContent.getInstance();
     // 扫描指定包下的类名
@@ -100,6 +103,15 @@ public class InitBean {
                         clazz.isAnnotationPresent(Component.class)) {
                     instance = clazz.newInstance();
                     beanContent.setBean(clazz.getSimpleName(), instance);
+                }
+                if (clazz.isAnnotationPresent(Component.class)){
+                    Method[] methods = clazz.getMethods();
+                    for (Method method:methods) {
+                        if (method.isAnnotationPresent(Bean.class)){
+                            Object obj = method.invoke(beanContent.getBean(clazz.getSimpleName()));
+                            beanContent.setBean(obj.getClass().getSimpleName(),obj);
+                        }
+                    }
                 }
             }
             logger.info("初始化bean成功!");

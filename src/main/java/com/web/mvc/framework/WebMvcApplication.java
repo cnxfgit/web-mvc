@@ -6,6 +6,7 @@ import com.web.mvc.framework.filter.LoginFilter;
 import com.web.mvc.framework.listener.ContextLoaderListener;
 import com.web.mvc.framework.listener.SessionListener;
 import com.web.mvc.framework.log.Log;
+import com.web.mvc.framework.log.LogFactory;
 import com.web.mvc.framework.servlet.DispatchServlet;
 import com.web.mvc.framework.servlet.ResourceServlet;
 import org.apache.catalina.LifecycleException;
@@ -16,7 +17,7 @@ import org.apache.tomcat.util.descriptor.web.FilterMap;
 
 public class WebMvcApplication {
 
-    private static Log logger = Log.getLogger(WebMvcApplication.class);
+    private static Log logger = LogFactory.getSimpleLog(WebMvcApplication.class);
 
     public static void run(Class mainClass, Integer port, String... args){
         if (mainClass.isAnnotationPresent(WebMvcRun.class)){

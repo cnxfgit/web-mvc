@@ -6,6 +6,7 @@ import com.web.mvc.framework.annotation.component.RestController;
 import com.web.mvc.framework.annotation.param.RequestBody;
 import com.web.mvc.framework.annotation.param.RequestParam;
 import com.web.mvc.framework.common.Result;
+import com.web.mvc.framework.log.LogFactory;
 import com.web.mvc.testwork.common.TableResult;
 import com.web.mvc.testwork.entity.User;
 import com.web.mvc.framework.log.Log;
@@ -17,7 +18,7 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController {
 
-    Log logger = Log.getLogger(UserController.class);
+    Log logger = LogFactory.getSimpleLog(UserController.class);
 
     @Autowired
     private UserService userService;

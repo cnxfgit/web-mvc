@@ -10,6 +10,7 @@ import com.web.mvc.framework.constant.PropertiesConstant;
 import com.web.mvc.framework.content.BeanContent;
 import com.web.mvc.framework.content.PropertiesContent;
 import com.web.mvc.framework.log.Log;
+import com.web.mvc.framework.log.LogFactory;
 import com.web.mvc.framework.util.JsonUtil;
 import com.web.mvc.framework.util.ReflectUtil;
 import com.web.mvc.framework.util.StringUtil;
@@ -30,7 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class DispatchServlet extends HttpServlet {
 
-    private Log logger = Log.getLogger(DispatchServlet.class);
+    private Log logger = LogFactory.getSimpleLog(DispatchServlet.class);
     // 配置文件
     private PropertiesContent propertiesContent = PropertiesContent.getInstance();
     // bean容器
@@ -175,6 +176,10 @@ public class DispatchServlet extends HttpServlet {
             String beanName = method.getDeclaringClass().getSimpleName();
             try {
                 Object result = method.invoke(beanContent.getBean(beanName), list.toArray());// 执行controller对应的方法
+                if (result instanceof String) {
+                    resp.getWriter().write(result.toString());
+                    return;
+                }
                 resp.getWriter().write(JsonUtil.toJson(result));
             } catch (Exception e) {
                 e.printStackTrace();
