@@ -21,10 +21,7 @@ public class DataSourceFactory {
             logger.err("数据库用户名有误!");
             return null;
         }
-        if (StringUtil.isEmpty(driverBody.getPassword())){
-            logger.err("数据库密码有误!");
-            return null;
-        }
+        // 密码可以为空
         return new DataSource(driverBody);
     }
 

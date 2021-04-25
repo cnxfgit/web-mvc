@@ -18,27 +18,11 @@ import java.sql.Statement;
 public class TestController {
 
     @Autowired
-    private TestService testService;
-
-    @Value("scanPackage")
-    String packageName;
-
-    @Value("encoding")
-    String encoding;
-
-    @Autowired
     private User user;
 
     @Autowired
     private DataSource dataSource;
 
-    @RequestMapping("/te")
-    public String te(){
-        System.out.println(packageName);
-        System.out.println(user.getName());
-        System.out.println(encoding);
-        return packageName + "<br/>" + user.getName() + "<br/>" +encoding;
-    }
 
     @RequestMapping("/sql")
     public String sql(){
@@ -46,7 +30,8 @@ public class TestController {
             new Thread(()->{
                 Connection connection = dataSource.getConnection();
                 Statement statement = JdbcUtil.createStatement(connection);
-                ResultSet resultSet = JdbcUtil.executeQuery(statement,"select * from user");
+                ResultSet resultSet = JdbcUtil.executeQuery(statement,"select * from t_admin");
+                JdbcUtil.printResultSet(resultSet,",");
                 JdbcUtil.close(resultSet);
                 JdbcUtil.close(statement);
                 dataSource.setConnection(connection);

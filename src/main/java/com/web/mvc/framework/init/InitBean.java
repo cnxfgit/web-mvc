@@ -49,9 +49,9 @@ public class InitBean {
             logger.err("扫描包失败!");
         }
         initInstance();// 初始化bean
+        valueInjection();// @Value注入
+        beanInjection();// @Bean生成
         dependencyInjection();// 依赖注入
-        valueInjection();// @value注入
-        beanInjection();// @Bean
     }
 
     private void beanInjection(){
