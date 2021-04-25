@@ -2,9 +2,9 @@ package com.web.mvc.framework.util;
 
 public class ThreadUtil {
 
-    public static void stop(Integer seconds){
+    public static void sleep(Integer millis){
         try {
-            Thread.sleep(seconds * 1000);
+            Thread.sleep(millis);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

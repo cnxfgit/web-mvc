@@ -5,7 +5,7 @@ import java.util.Date;
 
 public class SimpleLog implements Log{
 
-    private static String className;
+    private String className;
     private static final String PRE = " ==> ";
 
     private SimpleLog(Class clazz){

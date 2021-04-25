@@ -50,7 +50,30 @@ public class InitBean {
         }
         initInstance();// 初始化bean
         dependencyInjection();// 依赖注入
-        valueInjection();
+        valueInjection();// @value注入
+        beanInjection();// @Bean
+    }
+
+    private void beanInjection(){
+        try {
+            for (String className : classNames) {
+                Class clazz = Class.forName(className);
+                if (clazz.isAnnotationPresent(Component.class)){
+                    Method[] methods = clazz.getMethods();
+                    for (Method method:methods) {
+                        if (method.isAnnotationPresent(Bean.class)){
+                            Object obj = method.invoke(beanContent.getBean(clazz.getSimpleName()));
+                            beanContent.setBean(obj.getClass().getSimpleName(),obj);
+                        }
+                    }
+                }
+            }
+            logger.info("@Bean注入成功!");
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.err("@Bean注入失败!");
+        }
+
     }
 
     private void valueInjection() {
@@ -103,15 +126,6 @@ public class InitBean {
                         clazz.isAnnotationPresent(Component.class)) {
                     instance = clazz.newInstance();
                     beanContent.setBean(clazz.getSimpleName(), instance);
-                }
-                if (clazz.isAnnotationPresent(Component.class)){
-                    Method[] methods = clazz.getMethods();
-                    for (Method method:methods) {
-                        if (method.isAnnotationPresent(Bean.class)){
-                            Object obj = method.invoke(beanContent.getBean(clazz.getSimpleName()));
-                            beanContent.setBean(obj.getClass().getSimpleName(),obj);
-                        }
-                    }
                 }
             }
             logger.info("初始化bean成功!");
