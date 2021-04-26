@@ -2,19 +2,19 @@ package com.web.mvc.testwork.controller;
 
 import com.web.mvc.framework.annotation.RequestMapping;
 import com.web.mvc.framework.annotation.bean.Autowired;
-import com.web.mvc.framework.annotation.component.RestController;
+import com.web.mvc.framework.annotation.component.Controller;
 import com.web.mvc.framework.annotation.param.RequestBody;
 import com.web.mvc.framework.annotation.param.RequestParam;
 import com.web.mvc.framework.common.Result;
+import com.web.mvc.framework.log.Log;
 import com.web.mvc.framework.log.LogFactory;
 import com.web.mvc.testwork.common.TableResult;
 import com.web.mvc.testwork.entity.User;
-import com.web.mvc.framework.log.Log;
 import com.web.mvc.testwork.service.UserService;
 
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/user")
 public class UserController {
 

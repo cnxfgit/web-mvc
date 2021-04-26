@@ -1,7 +1,6 @@
 package com.web.mvc.testwork.controller;
 
 import com.web.mvc.framework.annotation.Value;
-import com.web.mvc.framework.annotation.bean.Bean;
 import com.web.mvc.framework.annotation.component.Component;
 import com.web.mvc.framework.sql.datasource.DataSource;
 import com.web.mvc.framework.sql.datasource.DataSourceFactory;
@@ -24,7 +23,7 @@ public class TestComponent {
 
 
     // 注册进容器
-    @Bean
+
     public DataSource setDataSource(){
         DriverBody driverBody = new DriverBody();
         driverBody.setDriverClass(driverClass);

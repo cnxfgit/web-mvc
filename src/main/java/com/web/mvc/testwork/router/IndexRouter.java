@@ -1,9 +1,9 @@
 package com.web.mvc.testwork.router;
 
 import com.web.mvc.framework.annotation.RequestMapping;
-import com.web.mvc.framework.annotation.component.Controller;
+import com.web.mvc.framework.annotation.component.Router;
 
-@Controller
+@Router
 public class IndexRouter {
 
     @RequestMapping("/index")

@@ -2,7 +2,7 @@ package com.web.mvc.framework.servlet;
 
 import com.web.mvc.framework.annotation.RequestMapping;
 import com.web.mvc.framework.annotation.component.Controller;
-import com.web.mvc.framework.annotation.component.RestController;
+import com.web.mvc.framework.annotation.component.Router;
 import com.web.mvc.framework.annotation.param.RequestBody;
 import com.web.mvc.framework.annotation.param.RequestParam;
 import com.web.mvc.framework.common.Result;
@@ -57,8 +57,8 @@ public class DispatchServlet extends HttpServlet {
     private boolean initViewMapping() {
         for (Map.Entry entry : beanContent.getEntrySet()) {
             Class clazz = entry.getValue().getClass();
-            // 如果不是Controller则终止
-            if (!clazz.isAnnotationPresent(Controller.class)) continue;
+            // 如果不是Router则终止
+            if (!clazz.isAnnotationPresent(Router.class)) continue;
             StringBuilder baseUrl = new StringBuilder();
             if (clazz.isAnnotationPresent(RequestMapping.class)) {
                 RequestMapping requestMapping = (RequestMapping) clazz.getAnnotation(RequestMapping.class);
@@ -84,8 +84,8 @@ public class DispatchServlet extends HttpServlet {
     private boolean initHandleMapping() {
         for (Map.Entry entry : beanContent.getEntrySet()) {
             Class clazz = entry.getValue().getClass();
-            // 如果不是RestController则终止
-            if (!clazz.isAnnotationPresent(RestController.class)) continue;
+            // 如果不是Controller则终止
+            if (!clazz.isAnnotationPresent(Controller.class)) continue;
             StringBuilder baseUrl = new StringBuilder();
             if (clazz.isAnnotationPresent(RequestMapping.class)) {
                 RequestMapping requestMapping = (RequestMapping) clazz.getAnnotation(RequestMapping.class);

@@ -5,7 +5,7 @@ import com.web.mvc.framework.annotation.bean.Autowired;
 import com.web.mvc.framework.annotation.bean.Bean;
 import com.web.mvc.framework.annotation.component.Component;
 import com.web.mvc.framework.annotation.component.Controller;
-import com.web.mvc.framework.annotation.component.RestController;
+import com.web.mvc.framework.annotation.component.Router;
 import com.web.mvc.framework.annotation.component.Service;
 import com.web.mvc.framework.constant.PropertiesConstant;
 import com.web.mvc.framework.content.BeanContent;
@@ -120,8 +120,8 @@ public class InitBean {
                 Class clazz = Class.forName(className);
                 Object instance = null;
                 // 类型做key，实例作为value
-                if (clazz.isAnnotationPresent(Controller.class) ||
-                        clazz.isAnnotationPresent(RestController.class) ||
+                if (clazz.isAnnotationPresent(Router.class) ||
+                        clazz.isAnnotationPresent(Controller.class) ||
                         clazz.isAnnotationPresent(Service.class) ||
                         clazz.isAnnotationPresent(Component.class)) {
                     instance = clazz.newInstance();
