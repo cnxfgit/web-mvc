@@ -1,13 +1,14 @@
-package com.web.mvc.testwork.controller;
+package com.web.mvc.testwork.component;
 
 import com.web.mvc.framework.annotation.Value;
+import com.web.mvc.framework.annotation.bean.Bean;
 import com.web.mvc.framework.annotation.component.Component;
 import com.web.mvc.framework.sql.datasource.DataSource;
 import com.web.mvc.framework.sql.datasource.DataSourceFactory;
 import com.web.mvc.framework.sql.datasource.DriverBody;
 
 @Component
-public class TestComponent {
+public class SqlComponent {
 
     @Value("dataSource.username")
     private String username;
@@ -21,9 +22,8 @@ public class TestComponent {
     @Value("dataSource.driverClass")
     private String driverClass;
 
-
     // 注册进容器
-
+    @Bean
     public DataSource setDataSource(){
         DriverBody driverBody = new DriverBody();
         driverBody.setDriverClass(driverClass);

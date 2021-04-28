@@ -1,33 +1,19 @@
 package com.web.mvc.testwork.service;
 
-import com.web.mvc.framework.annotation.component.Service;
-import com.web.mvc.testwork.init.UserContent;
 import com.web.mvc.testwork.entity.User;
 
 import java.util.List;
 
-@Service
-public class UserService {
+public interface UserService {
 
-    UserContent userContent = UserContent.getInstance();
+    List<User> getUser(String id, Integer age);
 
-    public List<User> getUser(String id,Integer age){
-        return userContent.getAllUser(id,age);
-    }
+    User getUserByName(String name);
 
-    public User getUserByName(String name){
-        return userContent.getUser(name);
-    }
+    boolean addUser(User user);
 
-    public boolean addUser(User user){
-        return userContent.addUser(user);
-    }
+    boolean deleteUser(String id);
 
-    public boolean deleteUser(String id){
-        return userContent.deleteUser(id);
-    }
+    boolean updateUser(User user);
 
-    public boolean updateUser(User user){
-        return userContent.putUser(user);
-    }
 }

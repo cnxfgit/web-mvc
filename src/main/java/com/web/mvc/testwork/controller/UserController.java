@@ -23,13 +23,13 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+
     @RequestMapping("/get")
     public TableResult getUser(@RequestParam("page") String page,
                                @RequestParam("limit") String limit,
                                @RequestParam("id") String id,
                                @RequestParam("age") Integer age){
-        logger.info(page);
-        logger.info(limit);
+
         List<User> list = userService.getUser(id,age);
         return TableResult.ok(list,list.size());
     }

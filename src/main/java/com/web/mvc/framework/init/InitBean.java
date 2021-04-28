@@ -9,6 +9,7 @@ import com.web.mvc.framework.annotation.component.Router;
 import com.web.mvc.framework.annotation.component.Service;
 import com.web.mvc.framework.constant.PropertiesConstant;
 import com.web.mvc.framework.content.BeanContent;
+import com.web.mvc.framework.content.ClassNamesContent;
 import com.web.mvc.framework.content.PropertiesContent;
 import com.web.mvc.framework.log.Log;
 import com.web.mvc.framework.log.LogFactory;
@@ -16,11 +17,10 @@ import com.web.mvc.framework.log.LogFactory;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -31,7 +31,7 @@ public class InitBean {
     // 配置文件
     private PropertiesContent propertiesContent = PropertiesContent.getInstance();
     // 扫描指定包下的类名
-    private List<String> classNames = new ArrayList<>();
+    private ClassNamesContent classNames = ClassNamesContent.getInstance();
     // bean容器
     private BeanContent beanContent = BeanContent.getInstance();
 
@@ -39,7 +39,7 @@ public class InitBean {
         String packagePath = propertiesContent.getProp(PropertiesConstant.SCAN_PACKAGE);
         try {
             String path = this.getClass().getResource("").toString();//判断是否jar包启动
-            logger.info(path);
+            //logger.info(path);
             if (path.substring(0, 3).equals("jar")) {
                 scanClassWithJar(path, packagePath);
             } else scanClass(packagePath);
@@ -56,7 +56,7 @@ public class InitBean {
 
     private void beanInjection(){
         try {
-            for (String className : classNames) {
+            for (String className : classNames.getList()) {
                 Class clazz = Class.forName(className);
                 if (clazz.isAnnotationPresent(Component.class)){
                     Method[] methods = clazz.getMethods();
@@ -116,7 +116,7 @@ public class InitBean {
 
     private void initInstance() {
         try {
-            for (String className : classNames) {
+            for (String className : classNames.getList()) {
                 Class clazz = Class.forName(className);
                 Object instance = null;
                 // 类型做key，实例作为value
@@ -126,6 +126,13 @@ public class InitBean {
                         clazz.isAnnotationPresent(Component.class)) {
                     instance = clazz.newInstance();
                     beanContent.setBean(clazz.getSimpleName(), instance);
+                }
+                if (clazz.isAnnotationPresent(Service.class)){
+                    // service需要创建代理类
+                    Class serviceInterface = clazz.getInterfaces()[0];
+                    Object obj = Proxy.newProxyInstance(serviceInterface.getClassLoader(),
+                            new Class[]{serviceInterface},new ServiceProxy(instance));
+                    beanContent.setBean(serviceInterface.getSimpleName(), obj);
                 }
             }
             logger.info("初始化bean成功!");
@@ -148,7 +155,7 @@ public class InitBean {
             if (file.isDirectory()) {
                 scanClass(packagePath + "." + file.getName());
             } else if (file.getName().contains(".class")) {
-                classNames.add((packagePath + "." + file.getName().replaceAll(".class", "")));
+                classNames.getList().add((packagePath + "." + file.getName().replaceAll(".class", "")));
             }
         }
     }
@@ -168,7 +175,7 @@ public class InitBean {
                 if (entryName.endsWith(".class")) {
                     if (entryName.startsWith(packagePath)) {
                         entryName = entryName.replace("/", ".").substring(0, entryName.lastIndexOf("."));
-                        classNames.add(entryName);
+                        classNames.getList().add(entryName);
                     }
                 }
             }

@@ -6,8 +6,10 @@ import com.web.mvc.framework.util.JdbcUtil;
 import com.web.mvc.framework.util.ThreadUtil;
 
 import java.sql.*;
+import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class DataSource {
@@ -17,7 +19,11 @@ public class DataSource {
 
     private AtomicInteger atomicInteger = new AtomicInteger(0);// 原子类型线程安全
     private BlockingQueue<Connection> pool;
+    private Map<Long,Connection> threadMap = new ConcurrentHashMap<>();
 
+    public Map<Long,Connection> getThreadMap(){
+        return threadMap;
+    }
 
     public void setConnection(Connection connection) {
         pool.offer(connection);
@@ -83,7 +89,7 @@ public class DataSource {
     }
 
 
-    public Connection createConnection(String url, String username, String password){
+    private Connection createConnection(String url, String username, String password){
         Connection connection = null;
         try {
             connection = DriverManager.getConnection(url, username, password);

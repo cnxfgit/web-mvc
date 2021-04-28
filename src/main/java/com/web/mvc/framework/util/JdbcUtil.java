@@ -5,6 +5,7 @@ import com.web.mvc.framework.log.Log;
 import com.web.mvc.framework.log.LogFactory;
 
 import java.io.PrintStream;
+import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.concurrent.Executors;
 
@@ -118,6 +119,31 @@ public class JdbcUtil {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static void fieldChange(Field field,ResultSet resultSet,Object obj) throws SQLException {
+        if (field.getType() == int.class || field.getType() == Integer.class){
+            int f = resultSet.getInt(field.getName());
+            ReflectUtil.setField(field,obj,Integer.valueOf(f));
+        }else {
+            String f = resultSet.getString(field.getName());
+            ReflectUtil.setField(field,obj,f);
+        }
+    }
+
+    public static String sqlParam(String sql,Object[] args){
+        for (int i = 0; i < args.length; i++) {
+            if (args[i] instanceof String || args[i] instanceof Character ){
+                sql = sql.replace("?","'"+args[i].toString()+"'");
+            }else if (args[i] instanceof Integer || args[i] instanceof Long ||
+                    args[i] instanceof Short || args[i] instanceof Byte ||
+                    args[i] instanceof Double || args[i] instanceof Float ||
+                    args[i] instanceof Boolean){
+                sql = sql.replace("?",args[i].toString());
+            }
+        }
+
+        return sql;
     }
 
 }
