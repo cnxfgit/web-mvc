@@ -1,9 +1,11 @@
 package com.web.mvc.framework.common;
 
+import java.io.Serializable;
+
 /**
  * 通用的json返回体
  */
-public class Result {
+public class Result implements Serializable {
 
     private Integer code;
     private String msg;

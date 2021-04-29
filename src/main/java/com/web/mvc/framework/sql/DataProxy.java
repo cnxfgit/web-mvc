@@ -18,7 +18,6 @@ public class DataProxy<T> implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-
         DataMethod dataMethod = new DataMethod(method,args);
         return dataMethod.execute(dataSource);
     }

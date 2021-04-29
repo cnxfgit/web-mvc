@@ -17,14 +17,12 @@ public class UserServiceImpl implements UserService {
     @Autowired
     UserData userData;
 
-
     @Override
     public List<User> getUser(String id,Integer age){
-        List<User> list = userData.print(1);
-        for (User user:list) {
-            System.out.println(user.toString());
-        }
-        return userContent.getAllUser(id,age);
+        System.out.println(userData.update("测试", 1));
+
+        Integer i = null;
+        return userData.print(i);
     }
 
     @Override

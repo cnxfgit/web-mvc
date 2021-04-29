@@ -18,7 +18,7 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController {
 
-    Log logger = LogFactory.getSimpleLog(UserController.class);
+    private static Log logger = LogFactory.getSimpleLog(UserController.class);
 
     @Autowired
     private UserService userService;

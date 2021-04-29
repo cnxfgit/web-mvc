@@ -29,33 +29,64 @@ public class DataMethod {
     private final Method method;
     private final Object[] args;
 
-    public DataMethod(Method method,Object[] args){
+    public DataMethod(Method method, Object[] args) {
         this.method = method;
         this.args = args;
     }
 
     public Object execute(DataSource dataSource) {
         Annotation[] annotations = method.getAnnotations();
-        for (Annotation annotation:annotations) {
-            if (annotation instanceof Select){
+        for (Annotation annotation : annotations) {
+            if (annotation instanceof Select) {
                 return select(dataSource);
             }
-            if (annotation instanceof Insert){
+            if (annotation instanceof Insert) {
                 return insert(dataSource);
             }
-            if (annotation instanceof Delete){
+            if (annotation instanceof Delete) {
                 return delete(dataSource);
             }
-            if (annotation instanceof Update){
+            if (annotation instanceof Update) {
                 return update(dataSource);
             }
         }
-        return method.getReturnType();
+        return null;
     }
 
     private Object update(DataSource dataSource) {
-        System.out.println("update");
-        return null;
+
+        Map<Long, Connection> threadMap = dataSource.getThreadMap();
+        Connection threadCoon = threadMap.get(Thread.currentThread().getId());
+        Connection connection = null;
+        if (threadCoon != null) {
+            connection = threadCoon;
+        } else {
+            connection = dataSource.getConnection();
+        }
+
+        Statement statement = JdbcUtil.createStatement(connection);
+        Update update = method.getAnnotation(Update.class);
+        String sql = update.value();
+
+        if (args != null && args.length != 0) {
+            sql = JdbcUtil.sqlParam(update.value(), args);
+        }
+
+        logger.info("执行update: " + sql);
+        Integer integer = null;
+        try{
+            integer = JdbcUtil.executeUpdate(statement, sql);
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            JdbcUtil.close(statement);
+            if (threadCoon == null) {
+                dataSource.setConnection(connection);
+            }
+        }
+
+
+        return integer;
     }
 
     private Object delete(DataSource dataSource) {
@@ -68,56 +99,14 @@ public class DataMethod {
         return null;
     }
 
-    private Object select(Connection connection) {
-        Class clazz = method.getReturnType();
-        Select select = method.getAnnotation(Select.class);
-        Statement statement = JdbcUtil.createStatement(connection);
-        String sql = select.value();
-        System.out.println(args.length);
-        if (args.length != 0){
-            for (int i = 0; i < args.length; i++) {
-                sql = sql.replace("?",args[i].toString());
-            }
-        }
-        System.out.println(sql);
-        ResultSet resultSet = JdbcUtil.executeQuery(statement,sql);
-
-        ArrayList res = null;
-        try {
-            if (clazz == List.class){
-                Type type = method.getGenericReturnType();
-                String genericClassName = StringUtil.getClassName(type);
-                Class generic = Class.forName(genericClassName);
-                res = new ArrayList<>();
-                Field[] fields = generic.getDeclaredFields();
-
-                while (resultSet.next()){
-                    Object obj = ReflectUtil.newInstance(generic);
-                    for (Field field:fields) {
-                        field.setAccessible(true);
-                        JdbcUtil.fieldChange(field,resultSet,obj);
-                    }
-                    res.add(obj);
-                }
-            }
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }finally {
-            JdbcUtil.close(resultSet);
-            JdbcUtil.close(statement);
-        }
-        return res;
-    }
-
     private Object select(DataSource dataSource) {
 
-        Map<Long,Connection> threadMap = dataSource.getThreadMap();
+        Map<Long, Connection> threadMap = dataSource.getThreadMap();
         Connection threadCoon = threadMap.get(Thread.currentThread().getId());
         Connection connection = null;
-        if (threadCoon != null){
+        if (threadCoon != null) {
             connection = threadCoon;
-        }else {
+        } else {
             connection = dataSource.getConnection();
         }
 
@@ -127,47 +116,51 @@ public class DataMethod {
         Statement statement = JdbcUtil.createStatement(connection);
         String sql = select.value();
 
-        if (args.length != 0){
-            sql = JdbcUtil.sqlParam(select.value(),args);
+        if (args != null && args.length != 0) {
+            sql = JdbcUtil.sqlParam(select.value(), args);
         }
 
-        logger.info("执行sql: " + sql);
-        ResultSet resultSet = JdbcUtil.executeQuery(statement,sql);
+        logger.info("执行select: " + sql);
+        ResultSet resultSet = JdbcUtil.executeQuery(statement, sql);
 
-        ArrayList res = null;
+        ArrayList ArrRes = null;
+        Object objRes = null;
         try {
-            if (clazz == List.class){
+            if (clazz == List.class) {
                 Type type = method.getGenericReturnType();
                 String genericClassName = StringUtil.getClassName(type);
                 Class generic = Class.forName(genericClassName);
-                res = new ArrayList<>();
+                ArrRes = new ArrayList<>();
                 Field[] fields = generic.getDeclaredFields();
 
-                while (resultSet.next()){
+                while (resultSet.next()) {
                     Object obj = ReflectUtil.newInstance(generic);
-                    for (Field field:fields) {
+                    for (Field field : fields) {
                         field.setAccessible(true);
-                        if (field.getType() == int.class || field.getType() == Integer.class){
-                            int f = resultSet.getInt(field.getName());
-                            ReflectUtil.setField(field,obj,Integer.valueOf(f));
-                        }else {
-                            String f = resultSet.getString(field.getName());
-                            ReflectUtil.setField(field,obj,f);
-                        }
+                        JdbcUtil.fieldChange(field, resultSet, obj);
                     }
-                    res.add(obj);
+                    ArrRes.add(obj);
+                }
+            } else {
+                objRes = clazz.newInstance();
+                Field[] fields = clazz.getDeclaredFields();
+                while (resultSet.next()) {
+                    for (Field field : fields) {
+                        field.setAccessible(true);
+                        JdbcUtil.fieldChange(field, resultSet, objRes);
+                    }
                 }
             }
-
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             JdbcUtil.close(resultSet);
             JdbcUtil.close(statement);
-            if (threadCoon == null){
+            if (threadCoon == null) {
                 dataSource.setConnection(connection);
             }
         }
-        return res;
+        if (clazz == List.class) return ArrRes;
+        else return objRes;
     }
 }
