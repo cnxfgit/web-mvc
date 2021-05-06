@@ -19,7 +19,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getUser(String id,Integer age){
-        System.out.println(userData.update("测试", 1));
+        System.out.println(userData.update("测试", "1"));
 
         Integer i = null;
         return userData.print(i);

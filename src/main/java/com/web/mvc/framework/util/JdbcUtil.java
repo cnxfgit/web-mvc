@@ -153,8 +153,6 @@ public class JdbcUtil {
                 String newStr = StringUtil.replaceFirst(list.get(i), "?", args[i].toString());
                 sql = StringUtil.replaceFirst(sql,list.get(i), newStr.substring(2,newStr.length()-1));
             } else if (args[i] == null){
-                System.out.println(sql);
-                System.out.println(list.get(i));
                 sql = StringUtil.replaceFirst(sql,list.get(i), "");
             }
         }

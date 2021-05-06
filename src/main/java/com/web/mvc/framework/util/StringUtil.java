@@ -18,8 +18,8 @@ public class StringUtil {
     }
 
     public static String replaceFirst(String str,String target, String replacement){
-        for (int i = 0; i < str.length(); i++) {
-            if (i<=str.length()-target.length() && str.substring(i,i+target.length()).equals(target)){
+        for (int i = 0; i <= str.length()-target.length(); i++) {
+            if (str.substring(i,i+target.length()).equals(target)){
                 StringBuilder sb = new StringBuilder();
                 sb.append(str.substring(0,i));
                 sb.append(replacement);

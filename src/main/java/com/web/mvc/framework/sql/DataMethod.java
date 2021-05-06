@@ -85,18 +85,79 @@ public class DataMethod {
             }
         }
 
-
         return integer;
     }
 
     private Object delete(DataSource dataSource) {
-        System.out.println("delete");
-        return null;
+
+        Map<Long, Connection> threadMap = dataSource.getThreadMap();
+        Connection threadCoon = threadMap.get(Thread.currentThread().getId());
+        Connection connection = null;
+        if (threadCoon != null) {
+            connection = threadCoon;
+        } else {
+            connection = dataSource.getConnection();
+        }
+
+        Statement statement = JdbcUtil.createStatement(connection);
+        Delete delete = method.getAnnotation(Delete.class);
+        String sql = delete.value();
+
+
+        if (args != null && args.length != 0) {
+            sql = JdbcUtil.sqlParam(delete.value(), args);
+        }
+
+        logger.info("执行delete: " + sql);
+        Integer integer = null;
+        try{
+            integer = JdbcUtil.executeUpdate(statement, sql);
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            JdbcUtil.close(statement);
+            if (threadCoon == null) {
+                dataSource.setConnection(connection);
+            }
+        }
+
+        return integer;
     }
 
     private Object insert(DataSource dataSource) {
-        System.out.println("insert");
-        return null;
+
+        Map<Long, Connection> threadMap = dataSource.getThreadMap();
+        Connection threadCoon = threadMap.get(Thread.currentThread().getId());
+        Connection connection = null;
+        if (threadCoon != null) {
+            connection = threadCoon;
+        } else {
+            connection = dataSource.getConnection();
+        }
+
+        Statement statement = JdbcUtil.createStatement(connection);
+        Insert insert = method.getAnnotation(Insert.class);
+        String sql = insert.value();
+
+
+        if (args != null && args.length != 0) {
+            sql = JdbcUtil.sqlParam(insert.value(), args);
+        }
+
+        logger.info("执行insert: " + sql);
+        Integer integer = null;
+        try{
+            integer = JdbcUtil.executeUpdate(statement, sql);
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            JdbcUtil.close(statement);
+            if (threadCoon == null) {
+                dataSource.setConnection(connection);
+            }
+        }
+
+        return integer;
     }
 
     private Object select(DataSource dataSource) {

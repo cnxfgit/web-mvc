@@ -14,7 +14,7 @@ public class TestController {
 
     @RequestMapping("/sql")
     public String sql() {
-
+        userData.update("sb","lisi");
         return "ok";
     }
 }
