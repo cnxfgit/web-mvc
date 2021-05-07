@@ -10,6 +10,11 @@ public class StringUtil {
         return str==null||"".equals(str);
     }
 
+
+    public static String emptyIsNull(String str){
+        return str==null||"".equals(str) ? null:str;
+    }
+
     public static String getClassName(Type type){
         String typeName = type.getTypeName();
         int start = typeName.indexOf("<") + 1;

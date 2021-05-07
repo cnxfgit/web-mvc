@@ -8,6 +8,7 @@ import com.web.mvc.framework.annotation.param.RequestParam;
 import com.web.mvc.framework.common.Result;
 import com.web.mvc.framework.log.Log;
 import com.web.mvc.framework.log.LogFactory;
+import com.web.mvc.framework.util.StringUtil;
 import com.web.mvc.testwork.common.TableResult;
 import com.web.mvc.testwork.entity.User;
 import com.web.mvc.testwork.service.UserService;
@@ -25,12 +26,11 @@ public class UserController {
 
 
     @RequestMapping("/get")
-    public TableResult getUser(@RequestParam("page") String page,
-                               @RequestParam("limit") String limit,
+    public TableResult getUser(@RequestParam("page") Integer page,
+                               @RequestParam("limit") Integer limit,
                                @RequestParam("id") String id,
                                @RequestParam("age") Integer age){
-
-        List<User> list = userService.getUser(id,age);
+        List<User> list = userService.getUser(StringUtil.emptyIsNull(id),age,page,limit);
         return TableResult.ok(list,list.size());
     }
 

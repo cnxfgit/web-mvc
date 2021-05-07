@@ -8,10 +8,10 @@ import java.util.List;
 @Data
 public interface UserData {
 
-    @Select("select * from user where 1=1 @{and id=?} limit @{?},@{?}")
-    List<User> print(@Param Integer id );
+    @Select("select * from user where 1=1 @{and id = ?} @{and age = ?} limit @{?},@{?}")
+    List<User> getUsers(@Param String id,@Param Integer age,@Param Integer page, @Param Integer limit);
 
     @Update("update user set name = @{?} where id = @{?}")
-    Integer update(@Param String name,@Param String id);
+    Integer update(@Param String name,@Param String id,@Param Integer page, @Param Integer limit);
 
 }
