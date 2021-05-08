@@ -8,12 +8,11 @@ public interface UserService {
 
     List<User> getUser(String id, Integer age,Integer page,Integer limit);
 
-    User getUserByName(String name);
+    void addUser(User user);
 
-    boolean addUser(User user);
+    void deleteUser(String id);
 
-    boolean deleteUser(String id);
+    void updateUser(User user);
 
-    boolean updateUser(User user);
-
+    void test();
 }

@@ -2,17 +2,15 @@ package com.web.mvc.testwork.service.impl;
 
 import com.web.mvc.framework.annotation.bean.Autowired;
 import com.web.mvc.framework.annotation.component.Service;
+import com.web.mvc.framework.annotation.sql.Transactional;
 import com.web.mvc.testwork.dao.UserData;
 import com.web.mvc.testwork.entity.User;
-import com.web.mvc.testwork.init.UserContent;
 import com.web.mvc.testwork.service.UserService;
 
 import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
-
-    UserContent userContent = UserContent.getInstance();
 
     @Autowired
     UserData userData;
@@ -23,22 +21,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserByName(String name){
-        return userContent.getUser(name);
+    public void addUser(User user){
+        userData.addUser(user.getId(),user.getName(),user.getAge());
     }
 
     @Override
-    public boolean addUser(User user){
-        return userContent.addUser(user);
+    public void deleteUser(String id){
+        userData.deleteUser(id);
     }
 
     @Override
-    public boolean deleteUser(String id){
-        return userContent.deleteUser(id);
+    public void updateUser(User user){
+        userData.updateUser(user.getName(),user.getAge(),user.getId());
     }
 
     @Override
-    public boolean updateUser(User user){
-        return userContent.putUser(user);
+    @Transactional
+    public void test() {
+        userData.addUser("id","test",1);
+        userData.addUser("id","test",1);
     }
 }

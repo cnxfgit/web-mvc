@@ -184,7 +184,7 @@ public class DispatchServlet extends HttpServlet {
             } catch (Exception e) {
                 e.printStackTrace();
                 resp.setStatus(500);
-                resp.getWriter().write(JsonUtil.toJson(Result.ok(e.toString())));
+                resp.getWriter().write(JsonUtil.toJson(Result.fail(e.toString())));
             }
         } else {
             resp.setStatus(404);

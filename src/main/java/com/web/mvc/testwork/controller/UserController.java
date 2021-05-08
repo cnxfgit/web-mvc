@@ -34,35 +34,22 @@ public class UserController {
         return TableResult.ok(list,list.size());
     }
 
-    @RequestMapping("/getByName")
-    public User getUserByName(@RequestParam("name") String name){
-        System.out.println(name);
-        User user = userService.getUserByName(name);
-        return user;
-    }
-
     @RequestMapping("/add")
     public Result addUser(@RequestBody User user){
-        System.out.println(user);
-        if (userService.addUser(user)){
-            return Result.ok("添加成功!");
-        }else return Result.ok("添加失败!");
+       userService.addUser(user);
+       return Result.ok("添加成功!");
     }
 
     @RequestMapping("/delete")
     public Result deleteUser(@RequestParam("id") String id){
-        System.out.println(id);
-        if (userService.deleteUser(id)){
-            return Result.ok("删除成功!");
-        }else return Result.ok("删除失败!");
+        userService.deleteUser(id);
+        return Result.ok("删除成功!");
     }
 
     @RequestMapping("/update")
     public Result updateUser(@RequestBody User user){
-        System.out.println(user);
-        if (userService.updateUser(user)){
-            return Result.ok("更新成功!");
-        }else return Result.ok("更新失败!");
+        userService.updateUser(user);
+        return Result.ok("修改成功!");
     }
 
 }

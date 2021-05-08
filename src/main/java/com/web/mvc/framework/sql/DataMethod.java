@@ -17,6 +17,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,7 @@ public class DataMethod {
         this.args = args;
     }
 
-    public Object execute(DataSource dataSource) {
+    public Object execute(DataSource dataSource) throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException {
         Annotation[] annotations = method.getAnnotations();
         for (Annotation annotation : annotations) {
             if (annotation instanceof Select) {
@@ -53,7 +54,7 @@ public class DataMethod {
         return null;
     }
 
-    private Object update(DataSource dataSource) {
+    private Object update(DataSource dataSource) throws SQLException {
 
         Map<Long, Connection> threadMap = dataSource.getThreadMap();
         Connection threadCoon = threadMap.get(Thread.currentThread().getId());
@@ -75,9 +76,9 @@ public class DataMethod {
         logger.info("执行update: " + sql);
         Integer integer = null;
         try{
-            integer = JdbcUtil.executeUpdate(statement, sql);
+            integer = statement.executeUpdate(sql);
         }catch (Exception e){
-            e.printStackTrace();
+            throw e;
         }finally {
             JdbcUtil.close(statement);
             if (threadCoon == null) {
@@ -88,7 +89,7 @@ public class DataMethod {
         return integer;
     }
 
-    private Object delete(DataSource dataSource) {
+    private Object delete(DataSource dataSource) throws SQLException {
 
         Map<Long, Connection> threadMap = dataSource.getThreadMap();
         Connection threadCoon = threadMap.get(Thread.currentThread().getId());
@@ -111,9 +112,9 @@ public class DataMethod {
         logger.info("执行delete: " + sql);
         Integer integer = null;
         try{
-            integer = JdbcUtil.executeUpdate(statement, sql);
+            integer = statement.executeUpdate(sql);
         }catch (Exception e){
-            e.printStackTrace();
+            throw e;
         }finally {
             JdbcUtil.close(statement);
             if (threadCoon == null) {
@@ -124,7 +125,7 @@ public class DataMethod {
         return integer;
     }
 
-    private Object insert(DataSource dataSource) {
+    private Object insert(DataSource dataSource) throws SQLException {
 
         Map<Long, Connection> threadMap = dataSource.getThreadMap();
         Connection threadCoon = threadMap.get(Thread.currentThread().getId());
@@ -147,9 +148,9 @@ public class DataMethod {
         logger.info("执行insert: " + sql);
         Integer integer = null;
         try{
-            integer = JdbcUtil.executeUpdate(statement, sql);
+            integer = statement.executeUpdate(sql);
         }catch (Exception e){
-            e.printStackTrace();
+            throw e;
         }finally {
             JdbcUtil.close(statement);
             if (threadCoon == null) {
@@ -160,7 +161,7 @@ public class DataMethod {
         return integer;
     }
 
-    private Object select(DataSource dataSource) {
+    private Object select(DataSource dataSource) throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException {
 
         Map<Long, Connection> threadMap = dataSource.getThreadMap();
         Connection threadCoon = threadMap.get(Thread.currentThread().getId());
@@ -213,7 +214,7 @@ public class DataMethod {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw e;
         } finally {
             JdbcUtil.close(resultSet);
             JdbcUtil.close(statement);
