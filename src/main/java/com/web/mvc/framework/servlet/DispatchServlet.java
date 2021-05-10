@@ -1,6 +1,8 @@
 package com.web.mvc.framework.servlet;
 
 import com.web.mvc.framework.annotation.RequestMapping;
+import com.web.mvc.framework.annotation.aop.After;
+import com.web.mvc.framework.annotation.aop.Before;
 import com.web.mvc.framework.annotation.component.Controller;
 import com.web.mvc.framework.annotation.component.Router;
 import com.web.mvc.framework.annotation.param.RequestBody;
@@ -125,7 +127,7 @@ public class DispatchServlet extends HttpServlet {
         if (viewMapping.containsKey(url)) {
             String view = viewMapping.get(url);
             try {
-                req.setAttribute("hide","true");
+                req.setAttribute("hide","true");// 有标记的资源才能访问
                 req.getRequestDispatcher(view).forward(req, resp);// 转发致resource Servlet
             } catch (ServletException e) {
                 e.printStackTrace();
@@ -175,15 +177,37 @@ public class DispatchServlet extends HttpServlet {
             }
             String beanName = method.getDeclaringClass().getSimpleName();
             try {
+                // before
+                if (method.isAnnotationPresent(Before.class)){
+                    Before before = method.getAnnotation(Before.class);
+                    Object instance = beanContent.getBean(before.bean().getSimpleName());
+                    Method bMethod = before.bean().getMethod("before",
+                            HttpServletRequest.class,HttpServletResponse.class,String.class);
+                    bMethod.invoke(instance,req,resp,before.value());
+                }
                 Object result = method.invoke(beanContent.getBean(beanName), list.toArray());// 执行controller对应的方法
+                // after
+                if (method.isAnnotationPresent(After.class)){
+                    After after = method.getAnnotation(After.class);
+                    Object instance = beanContent.getBean(after.bean().getSimpleName());
+                    Method bMethod = after.bean().getMethod("after",
+                            HttpServletRequest.class,HttpServletResponse.class,String.class);
+                    bMethod.invoke(instance,req,resp,after.value());
+                }
                 if (result instanceof String) {
                     resp.getWriter().write(result.toString());
                     return;
                 }
                 resp.getWriter().write(JsonUtil.toJson(result));
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 e.printStackTrace();
-                resp.setStatus(500);
+                while (e.getCause() != null) {// 获取最底层的异常
+                    Throwable cause = e.getCause();
+                    if (e.equals(cause)) {
+                        System.out.println(e);
+                    }
+                    e = cause;
+                }
                 resp.getWriter().write(JsonUtil.toJson(Result.fail(e.toString())));
             }
         } else {

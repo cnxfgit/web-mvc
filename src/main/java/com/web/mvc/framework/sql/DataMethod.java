@@ -204,9 +204,10 @@ public class DataMethod {
                     ArrRes.add(obj);
                 }
             } else {
-                objRes = clazz.newInstance();
+                objRes = null;
                 Field[] fields = clazz.getDeclaredFields();
                 while (resultSet.next()) {
+                    objRes = clazz.newInstance();
                     for (Field field : fields) {
                         field.setAccessible(true);
                         JdbcUtil.fieldChange(field, resultSet, objRes);

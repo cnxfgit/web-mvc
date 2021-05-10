@@ -22,6 +22,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void addUser(User user){
+
+        User old = userData.findUserById(user.getId());
+        if (old != null) throw new RuntimeException("id已存在");
+
         userData.addUser(user.getId(),user.getName(),user.getAge());
     }
 

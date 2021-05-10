@@ -6,6 +6,6 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Before {
-    String bean();
-    String msg() default "";
+    Class bean();
+    String value() default "";
 }

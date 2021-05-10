@@ -81,7 +81,7 @@ layui.use(['jquery','table','form','layer'], function () {
                         error: function (result) {
                             layer.open({
                                 title: '后台异常',
-                                content: result.msg
+                                content: "后台异常，请联系管理员！"
                             });
                         }
                     });

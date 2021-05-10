@@ -8,6 +8,9 @@ import java.util.List;
 @Data
 public interface UserData {
 
+    @Select("select * from user where id = @{?}")
+    User findUserById(String id);
+
     @Select("select * from user where 1=1 @{and id = ?} @{and age = ?} limit @{?},@{?}")
     List<User> getUsers(@Param String id,@Param Integer age,@Param Integer page, @Param Integer limit);
 
