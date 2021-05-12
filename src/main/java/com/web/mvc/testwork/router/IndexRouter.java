@@ -16,20 +16,4 @@ public class IndexRouter {
         return "index";
     }
 
-    @RequestMapping("/user")
-    public String user(){
-        return "user/list";
-    }
-
-    @RequestMapping("/user/addPage")
-    public String userAdd(){
-        return "user/add";
-    }
-
-
-    @RequestMapping("/user/editPage")
-    public String userEdit(){
-        return "user/edit";
-    }
-
 }

@@ -19,7 +19,7 @@ import com.web.mvc.testwork.service.UserService;
 import java.util.List;
 
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/admin/user")
 public class UserController {
 
     private static Log logger = LogFactory.getSimpleLog(UserController.class);

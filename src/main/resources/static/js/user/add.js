@@ -7,7 +7,7 @@ layui.use(['jquery','form','layer'], function () {
     // 提交表单
     form.on('submit(saveBtn)', function (data) {
         $.ajax({
-            url: '/user/add',
+            url: '/admin/user/add',
             type: 'POST',
             data: data.field,
             success: function (result) {

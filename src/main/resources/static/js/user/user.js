@@ -21,7 +21,7 @@ layui.use(['jquery','table','form','layer'], function () {
 
     table.render({
         elem: '#user_table',
-        url: '/user/get',
+        url: '/admin/user/get',
         toolbar: '#toolbar_user',
         defaultToolbar: [],
         cols: [
@@ -45,7 +45,7 @@ layui.use(['jquery','table','form','layer'], function () {
                 type: 2,
                 maxmin: true,
                 area: ['50%', '80%'],
-                content: '/user/addPage',
+                content: '/admin/user/addPage',
                 end: function() {
                     location.reload();
                 }
@@ -62,7 +62,7 @@ layui.use(['jquery','table','form','layer'], function () {
                 yes: function () {
                     layer.close(win);
                     $.ajax({
-                        url: '/user/delete',
+                        url: '/admin/user/delete',
                         type: 'POST',
                         data: obj.data,
                         success: function (result) {
@@ -94,7 +94,7 @@ layui.use(['jquery','table','form','layer'], function () {
                 type: 2,
                 maxmin: true,
                 area: ['50%', '80%'],
-                content: '/user/editPage',
+                content: '/admin/user/editPage',
                 success: function () {
                     // 获取子页面的iframe的唯一id
                     let iframe = window['layui-layer-iframe' + index];

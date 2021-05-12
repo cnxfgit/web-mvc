@@ -198,7 +198,10 @@ public class DispatchServlet extends HttpServlet {
                     resp.getWriter().write(result.toString());
                     return;
                 }
-                resp.getWriter().write(JsonUtil.toJson(result));
+                if (result!=null){
+                    resp.getWriter().write(JsonUtil.toJson(result));
+                }
+
             } catch (Throwable e) {
                 e.printStackTrace();
                 while (e.getCause() != null) {// 获取最底层的异常

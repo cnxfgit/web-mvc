@@ -18,9 +18,9 @@ public class LoginFilter implements Filter {
         HttpServletResponse resp = (HttpServletResponse) response;
         HttpServletRequest req = (HttpServletRequest) request;
         HttpSession session = req.getSession();
-        session.setMaxInactiveInterval(5);
-        if (session.getAttribute("username") != null) chain.doFilter(request,response);
-        else resp.sendRedirect("/index");
+        session.setMaxInactiveInterval(60 * 30);
+        if (session.getAttribute("username") == null) chain.doFilter(request,response);
+        else resp.sendRedirect("/admin");
     }
 
     @Override
