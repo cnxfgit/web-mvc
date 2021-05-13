@@ -8,6 +8,10 @@ body {
     background: #3dcdd5;
 }
 
+#verCodeImg {
+    border: 1px solid #ddd;
+}
+
 .layui-container {
     width: 100%;
     height: 100%;

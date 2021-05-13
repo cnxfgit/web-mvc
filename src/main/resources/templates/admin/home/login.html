@@ -9,13 +9,13 @@
 <div class="layui-container">
     <div class="admin-login-background">
         <div class="layui-form login-form">
-            <form class="layui-form" id="login-form" action="/admin/login" method="post">
+            <form class="layui-form" id="login-form">
                 <div class="layui-form-item logo-title">
                     <h1>web-mvc后台登录</h1>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-icon layui-icon-username"></label>
-                    <input type="text" name="username" lay-verify="required|account" placeholder="用户名"
+                    <input type="text" name="username" lay-verify="required|username" placeholder="用户名"
                            autocomplete="off" class="layui-input">
                 </div>
                 <div class="layui-form-item">
@@ -25,10 +25,10 @@
                 </div>
                 <div class="layui-inline">
                     <div class="layui-input-inline">
-                        <input name="verCode" class="layui-input" lay-verify="required" placeholder="验证码" type="text">
+                        <input name="verCode" class="layui-input" lay-verify="required|verCode" placeholder="验证码" type="text">
                     </div>
                     <div class="layui-input-inline">
-                        <img src="/captcha" id="verCodeImg" width="120px" height="48px"/>
+                        <img src="/admin/captcha" id="verCodeImg" width="120px" height="48px"/>
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -44,4 +44,5 @@
 
 </body>
 <script type="text/javascript" src="/static/js/common-script.js"></script>
+<script type="text/javascript" src="/static/js/admin/home/login.js"></script>
 </html>

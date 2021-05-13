@@ -8,7 +8,7 @@ public class HomeRouter {
 
     @RequestMapping("/admin/login.html")
     public String login(){
-        return "admin/login";
+        return "admin/home/login";
     }
 
 

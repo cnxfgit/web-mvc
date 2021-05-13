@@ -26,7 +26,7 @@ public class CaptchaController {
 
     static ThreadLocal<Integer> result = new ThreadLocal<>();
 
-    @RequestMapping("/captcha")
+    @RequestMapping("/admin/captcha")
     public void sendImg(HttpServletRequest request, HttpServletResponse response){
         BufferedImage bufferedImage = getImage();
         ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -38,7 +38,6 @@ public class CaptchaController {
             IOUtils.copy(input, response.getOutputStream());
             HttpSession session = request.getSession();
             session.setAttribute("captcha",result.get());
-            System.out.println("验证码是" + session.getAttribute("captcha"));
         }catch (IOException e){
             e.printStackTrace();
         }finally {
@@ -90,19 +89,20 @@ public class CaptchaController {
         Graphics graphics = image.getGraphics();
         graphics.setColor(Color.white);
         graphics.fillRect(0, 0, width, height);  //绘制验证码图像背景为白色
-        Font currentFont = graphics.getFont();
-        Font newFont = new Font(currentFont.getFontName(), currentFont.getStyle(), 30);
+
+        Font newFont = new Font("黑体", Font.BOLD, 30);// 黑体 加粗 大小为30
         FontMetrics fontMetrics = graphics.getFontMetrics(newFont);
 
-        String string = produceString();
+        String string = produceString();// 随机生成运算字符串
 
         graphics.setColor(Color.green);
         graphics.setFont(newFont);
         //绘制绿色的验证码，并使其居中
         graphics.drawString(string, (width - fontMetrics.stringWidth(string)) / 2, (height - fontMetrics.getHeight()) / 2 + fontMetrics.getAscent());
         graphics.setColor(Color.blue);
+
         Random random = new Random();
-        for (int i = 0; i < 5; ++i) {  //绘制5条干扰线，其颜色为蓝
+        for (int i = 0; i < 10; ++i) {  //绘制10条干扰线，其颜色为蓝
             int x1 = random.nextInt(width), y1 = random.nextInt(height);
             int x2 = random.nextInt(width), y2 = random.nextInt(height);
             graphics.drawLine(x1, y1, x2, y2);
