@@ -1,6 +1,6 @@
 package com.web.mvc.framework.servlet;
 
-import com.web.mvc.framework.annotation.RequestMapping;
+import com.web.mvc.framework.annotation.component.RequestMapping;
 import com.web.mvc.framework.annotation.aop.After;
 import com.web.mvc.framework.annotation.aop.Before;
 import com.web.mvc.framework.annotation.component.Controller;

@@ -1,4 +1,4 @@
-package com.web.mvc.framework.annotation;
+package com.web.mvc.framework.annotation.component;
 
 import java.lang.annotation.*;
 

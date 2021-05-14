@@ -17,12 +17,7 @@ public class ContextLoaderListener implements ServletContextListener {
         DefaultProperties.init(); // 配置文件初始化
         new InitBean().init();// bean初始化及装配
         new InitData().init();// dao层代理初始化
+        //new Init
     }
-
-    @Override
-    public void contextDestroyed(ServletContextEvent sce) {
-
-    }
-
 
 }

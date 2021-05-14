@@ -1,6 +1,6 @@
 package com.web.mvc.testwork.router;
 
-import com.web.mvc.framework.annotation.RequestMapping;
+import com.web.mvc.framework.annotation.component.RequestMapping;
 import com.web.mvc.framework.annotation.component.Router;
 
 @Router

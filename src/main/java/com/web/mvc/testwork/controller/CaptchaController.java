@@ -1,6 +1,6 @@
 package com.web.mvc.testwork.controller;
 
-import com.web.mvc.framework.annotation.RequestMapping;
+import com.web.mvc.framework.annotation.component.RequestMapping;
 import com.web.mvc.framework.annotation.component.Controller;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 

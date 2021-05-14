@@ -18,12 +18,14 @@ layui.use(['jquery','form','layer'], function () {
             }
         },
         verCode: function (value) {
-
+            if (!/^(\-?)\d+$/.test(value)) {
+                return '验证码只能是纯数字';
+            }
         }
 
     });
 
-    //表单提交
+    // 表单提交
     form.on('submit(login)', function (data) {
 
         $.ajax({
@@ -37,6 +39,7 @@ layui.use(['jquery','form','layer'], function () {
                         content: result.msg
                     });
                 }else {
+                    flushCode();
                     layer.open({
                         title: '后台正常',
                         content: result.msg
@@ -44,6 +47,7 @@ layui.use(['jquery','form','layer'], function () {
                 }
             },
             error: function (result) {
+                flushCode();
                 layer.open({
                     title: '后台异常',
                     content: "后台异常，请联系管理员！"
@@ -54,9 +58,15 @@ layui.use(['jquery','form','layer'], function () {
         return false;// 不刷新页面
     });
 
+    // 看不清 换一张
+    $("#verCodeImg").click(function () {
+        flushCode();
+    });
+
     // 刷新验证码
     function flushCode() {
-        $("#verCodeImg")
+        let code = $("#verCodeImg");
+        code.prop('src', '/admin/captcha' + "?" + Date.now());
     }
 
 });

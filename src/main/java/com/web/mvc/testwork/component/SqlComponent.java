@@ -1,6 +1,6 @@
 package com.web.mvc.testwork.component;
 
-import com.web.mvc.framework.annotation.Value;
+import com.web.mvc.framework.annotation.component.Value;
 import com.web.mvc.framework.annotation.bean.Bean;
 import com.web.mvc.framework.annotation.component.Component;
 import com.web.mvc.framework.sql.datasource.DataSource;

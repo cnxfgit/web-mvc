@@ -1,6 +1,5 @@
 package com.web.mvc.testwork.config;
 
-
 import com.web.mvc.framework.annotation.component.Component;
 import com.web.mvc.framework.content.WebContent;
 
